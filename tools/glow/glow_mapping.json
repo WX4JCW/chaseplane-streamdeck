@@ -1,0 +1,398 @@
+[
+ {
+  "page": "A6912AD2-C22C-4329-8F68-275BF60F6C7C",
+  "folder": "CP_ROOT",
+  "pos": "6,0",
+  "icon": "Flashlight_Beam"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "1,0",
+  "icon": "Pilot_1"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "2,0",
+  "icon": "GoPro_Cam"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "3,0",
+  "icon": "GoPro_Cam"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "5,0",
+  "icon": "EFB"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "6,0",
+  "icon": "Radio_Panel_Inverse"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "7,0",
+  "icon": "737_Overhead"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "1,1",
+  "icon": "Pilot_1"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "2,1",
+  "icon": "GoPro_Cam"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "3,1",
+  "icon": "GoPro_Cam"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "5,1",
+  "icon": "EFB"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "6,1",
+  "icon": "737_Throttle_Inverse"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "7,1",
+  "icon": "737_Overhead"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "1,2",
+  "icon": "Pilot_1"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "3,2",
+  "icon": "GoPro_Cam"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "5,2",
+  "icon": "FFMC"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "6,2",
+  "icon": "MCP_Inverse"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "7,2",
+  "icon": "737_Overhead"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "5,3",
+  "icon": "FFMC"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "6,3",
+  "icon": "EICAS_Inverse"
+ },
+ {
+  "page": "D926C094-EE13-4BA6-BF62-8BE6BD895A04",
+  "folder": "COCKPIT",
+  "pos": "7,3",
+  "icon": "Flashlight_Beam"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "1,0",
+  "icon": "Galley"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "2,0",
+  "icon": "Galley"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "3,0",
+  "icon": "Galley"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "4,0",
+  "icon": "Galley"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "5,0",
+  "icon": "Galley"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "6,0",
+  "icon": "Galley"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "7,0",
+  "icon": "Galley"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "0,1",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "1,1",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "2,1",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "3,1",
+  "icon": "ESeat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "4,1",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "5,1",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "6,1",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "7,1",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "0,2",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "1,2",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "2,2",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "3,2",
+  "icon": "ESeat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "4,2",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "5,2",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "6,2",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "7,2",
+  "icon": "Seat_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "0,3",
+  "icon": "Toilet_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "1,3",
+  "icon": "Toilet_Purple"
+ },
+ {
+  "page": "8359A710-D25E-44C6-8CA9-073878512391",
+  "folder": "CABIN",
+  "pos": "7,3",
+  "icon": "Flashlight_Beam"
+ },
+ {
+  "page": "24597709-6FEB-471A-91F4-9998FAA5F92A",
+  "folder": "EXTERIOR",
+  "pos": "1,0",
+  "icon": "NO1_Engine2"
+ },
+ {
+  "page": "24597709-6FEB-471A-91F4-9998FAA5F92A",
+  "folder": "EXTERIOR",
+  "pos": "2,0",
+  "icon": "NO2_Engine2"
+ },
+ {
+  "page": "24597709-6FEB-471A-91F4-9998FAA5F92A",
+  "folder": "EXTERIOR",
+  "pos": "3,0",
+  "icon": "Left_Wing2"
+ },
+ {
+  "page": "24597709-6FEB-471A-91F4-9998FAA5F92A",
+  "folder": "EXTERIOR",
+  "pos": "4,0",
+  "icon": "Right_Wing2"
+ },
+ {
+  "page": "24597709-6FEB-471A-91F4-9998FAA5F92A",
+  "folder": "EXTERIOR",
+  "pos": "1,1",
+  "icon": "Nose2"
+ },
+ {
+  "page": "24597709-6FEB-471A-91F4-9998FAA5F92A",
+  "folder": "EXTERIOR",
+  "pos": "3,1",
+  "icon": "Left_Wing2"
+ },
+ {
+  "page": "24597709-6FEB-471A-91F4-9998FAA5F92A",
+  "folder": "EXTERIOR",
+  "pos": "4,1",
+  "icon": "Right_Wing2"
+ },
+ {
+  "page": "D295578C-626A-4F4A-BC86-55B5626C3E99",
+  "folder": "GROUND_SVC",
+  "pos": "1,0",
+  "icon": "Baggage_Loading_Orange"
+ },
+ {
+  "page": "D295578C-626A-4F4A-BC86-55B5626C3E99",
+  "folder": "GROUND_SVC",
+  "pos": "2,0",
+  "icon": "Catering_Truck_Orange"
+ },
+ {
+  "page": "D295578C-626A-4F4A-BC86-55B5626C3E99",
+  "folder": "GROUND_SVC",
+  "pos": "3,0",
+  "icon": "Fueling_Orange"
+ },
+ {
+  "page": "D295578C-626A-4F4A-BC86-55B5626C3E99",
+  "folder": "GROUND_SVC",
+  "pos": "2,1",
+  "icon": "Catering_Truck_Orange"
+ },
+ {
+  "page": "01F769D2-742F-40D7-AF0A-547DABDCEACF",
+  "folder": "ORBIT",
+  "pos": "1,0",
+  "icon": "Orbit2"
+ },
+ {
+  "page": "01F769D2-742F-40D7-AF0A-547DABDCEACF",
+  "folder": "ORBIT",
+  "pos": "2,0",
+  "icon": "Walkaround_LightBlue"
+ },
+ {
+  "page": "01F769D2-742F-40D7-AF0A-547DABDCEACF",
+  "folder": "ORBIT",
+  "pos": "3,0",
+  "icon": "Terminal 2b"
+ },
+ {
+  "page": "01F769D2-742F-40D7-AF0A-547DABDCEACF",
+  "folder": "ORBIT",
+  "pos": "4,0",
+  "icon": "Tower2"
+ },
+ {
+  "page": "01F769D2-742F-40D7-AF0A-547DABDCEACF",
+  "folder": "ORBIT",
+  "pos": "5,0",
+  "icon": "Traffic_Red"
+ },
+ {
+  "page": "01F769D2-742F-40D7-AF0A-547DABDCEACF",
+  "folder": "ORBIT",
+  "pos": "6,0",
+  "icon": "Cinematic_Camera"
+ },
+ {
+  "page": "01F769D2-742F-40D7-AF0A-547DABDCEACF",
+  "folder": "ORBIT",
+  "pos": "7,0",
+  "icon": "Flashlight_Beam"
+ },
+ {
+  "page": "01F769D2-742F-40D7-AF0A-547DABDCEACF",
+  "folder": "ORBIT",
+  "pos": "5,1",
+  "icon": "Spotting_Red"
+ }
+]
