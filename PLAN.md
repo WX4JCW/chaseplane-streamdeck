@@ -54,6 +54,11 @@ Verified: view suffix flags (`has_left_suffix` etc.) are the LEFT/RIGHT/FWD/MID/
 Dropdown is a flat list `INT|EXT|WORLD · name (tags)`, the `{label,value}` item shape stalexcorp proves works.
 Manifest sets `DisableAutomaticStates` so a press never flips state on its own.
 
+Verified in ChasePlaneTest (owner, 2026-10-17): 6 of 8 camera buttons, Flashlight and Cinematic work. Tower and Traffic did nothing.
+Cause, verified by probe: World-mode views (mode 2: Explore, FlyBy, Overview, Tower, Runway, Parking, Spotting, Traffic) get new GUIDs; the old GUIDs were not in `get_views`, and ChasePlane still replied `200 success:true` while not switching.
+Fix: settings keep `name` and `mode` with `guid`; a GUID not in `get_views` falls back to the same name and mode and the saved GUID is updated; with no match the key shows an alert. `setView` refuses GUIDs not in `get_views`.
+Verified: cinematic turns on with one `cam_cinematic_toggle` even from a view with `can_cinematics: false` (18 of 96 views have it); `cam_mode_set` shows `cinematic_enabled: true` 0.1 s later.
+
 Built: `src/actions/camera.ts`, `ui/camera.html`.
 
 ## Step 3. Flashlight and Cinematic actions
@@ -81,7 +86,27 @@ Verified: `streamdeck link` and `streamdeck restart com.acms.chaseplane` exist (
 
 Test: link, restart the plugin, place camera actions in ChasePlaneTest, confirm press switches the camera and the glow follows.
 
-Unverified: whether the stalexcorp plugin and ours fight when both are connected. Check: during the test, watch both buttons for the same camera.
+Done (owner, 2026-10-17: "the plugin does work"):
+- Linked with `streamdeck link`; test buttons written by `tools/test_profile.cjs` into ChasePlaneTest loaded and worked, so that action block shape (ActionID, LinkedTitle, Name, Plugin {Name, UUID, Version}, Resources, Settings, State, States[].Image, UUID) is what step 6 writes.
+- Both plugins ran at the same time (Flight Panel on stalexcorp, ChasePlaneTest on ours) with no conflict reported.
+- The camera dropdown works: the owner fixed Tower by picking it there.
+
+## Traffic page (added 2026-10-17, ChasePlaneTest > TRAFFIC folder)
+
+Verified (`tools/probe_traffic.mjs` and probes):
+- No next/previous traffic command exists in the API.
+- `request_ai_traffic` makes ChasePlane push `ai_traffic` with `snapshot`, `added`/`updated`/`removed`, `order` (uIds), `traffic_counts`, `filters`. Entries carry `uId`, `callsign`, `display_name`, `atc_type`, `atc_model`, `distance`, `phase`, `kind`. The list follows ChasePlane Remote's filters.
+- `cam_go_to_traffic {simobject_id}` and `ai_traffic_view {id}` both switch to the World Traffic view on that aircraft; `ai_traffic_track {id}` keeps the current view and looks at the aircraft. `camera_runtime_state.ai_traffic_tracking_id` reports the aircraft.
+- ChasePlane Remote's "Next TFC" is the World Traffic view selected again: each `set_view_by_guid` on Traffic while on it steps to the next aircraft in `order`, wrapping around. A Camera button set to WORLD · Traffic therefore works as Next TFC.
+
+Owner, 2026-10-17: "the TRAFFIC folder works".
+
+Built: `src/actions/traffic.ts` (Traffic Slot, My Aircraft = `user_aircraft_track`, Traffic Page); `tools/traffic_page.cjs` wrote 27 slots, My Aircraft and two page keys into the folder.
+
+Drawn keys (owner screenshot, KDFW, 2026-10-17): slots are SVG images sent with `setImage` (`src/actions/traffic-key.ts`): three lines (identity, type, phase + distance) in the airline color, glow outline in that color while viewed. SVG via `setImage` is verified to render on this Stream Deck. Title color cannot be set from the SDK (`setTitle` takes only title, state, target), which is why the key is drawn.
+Verified at KDFW: of 63 listed aircraft none carried a flight number, callsign, ATC id or route (`callsign_source: title_refined`); `atc_airline` (radio callsign name) and `atc_model` were filled. Line 1 falls back flight number > callsign > airline > ATC id > type.
+Verified: with `start_ai_traffic_refresh`, `ai_traffic` pushes arrive about every 2 s; non-snapshot pushes carry no `order`.
+The My Aircraft key once went missing from the saved page; `tools/traffic_page.cjs` now fills only empty positions and restored it, and it stayed.
 
 ## Step 6. Migrate the 66 buttons
 
@@ -92,4 +117,5 @@ Verified:
 
 Build: a script that, per mapped button, swaps the action UUID and plugin block to `com.acms.chaseplane.camera` (flashlight and cinematic to their actions), keeps `Settings.guid`, keeps both state images, and changes nothing else.
 
-Unverified: the exact action block Stream Deck 7.6 writes for our plugin. Check: read the profile entry Stream Deck creates in step 5 and copy its shape.
+Action block shape: as written in step 5 (verified working).
+Carry over `Settings.name` and `Settings.mode` from the stalexcorp settings (every camera button has them; the 4 flashlight and 1 cinematic buttons have no settings) so world views resolve by name. Check every GUID against `get_views` before writing; report any that are not listed.

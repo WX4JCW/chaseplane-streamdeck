@@ -1,5 +1,5 @@
 // Put the glow icon pairs on the Flight Panel ChasePlane buttons.
-// Usage: node apply_glow.js [--dry-run]
+// Usage: node apply_glow.cjs [--dry-run]
 // State 0 (not selected) gets SD_<icon>-off.png, state 1 (selected) gets SD_<icon>-on.png.
 // Refuses to run while Stream Deck is open; backs up each touched page first.
 const fs = require("fs");

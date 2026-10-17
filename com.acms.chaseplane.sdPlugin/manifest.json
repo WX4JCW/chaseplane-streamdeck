@@ -39,6 +39,34 @@
 				{ "Image": "imgs/actions/cinematic/key", "TitleAlignment": "bottom" },
 				{ "Image": "imgs/actions/cinematic/key-on", "TitleAlignment": "bottom" }
 			]
+		},
+		{
+			"Name": "Traffic Slot",
+			"UUID": "com.acms.chaseplane.traffic-slot",
+			"Icon": "imgs/actions/traffic-slot/icon",
+			"Tooltip": "Shows one aircraft from ChasePlane's traffic list. Press to view it; glows while viewed.",
+			"Controllers": ["Keypad"],
+			"DisableAutomaticStates": true,
+			"States": [
+				{ "Image": "imgs/actions/traffic-slot/empty", "TitleAlignment": "bottom" },
+				{ "Image": "imgs/actions/traffic-slot/empty", "TitleAlignment": "bottom" }
+			]
+		},
+		{
+			"Name": "My Aircraft",
+			"UUID": "com.acms.chaseplane.my-aircraft",
+			"Icon": "imgs/actions/my-aircraft/icon",
+			"Tooltip": "Puts the ChasePlane camera back on your aircraft.",
+			"Controllers": ["Keypad"],
+			"States": [{ "Image": "imgs/actions/my-aircraft/key", "TitleAlignment": "bottom" }]
+		},
+		{
+			"Name": "Traffic Page",
+			"UUID": "com.acms.chaseplane.traffic-page",
+			"Icon": "imgs/actions/traffic-page/icon",
+			"Tooltip": "Previous or next page of traffic slots.",
+			"Controllers": ["Keypad"],
+			"States": [{ "Image": "imgs/actions/traffic-page/key", "TitleAlignment": "bottom" }]
 		}
 	],
 	"Category": "ChasePlane Cameras",

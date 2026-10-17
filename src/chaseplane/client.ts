@@ -21,6 +21,19 @@ type CameraState = {
 	cinematic_enabled: boolean;
 };
 
+/** One AI aircraft from the `ai_traffic` push. */
+export type TrafficAircraft = {
+	uId: number;
+	callsign?: string;
+	display_name?: string;
+	atc_model?: string;
+	atc_airline?: string;
+	atc_flight_number?: string;
+	atc_id?: string;
+	phase?: string;
+	distance?: number;
+};
+
 type Message = { message: string; request_id?: string; status?: number; error?: string; payload?: any };
 
 const RECONNECT_MS = 3000;
@@ -30,7 +43,7 @@ const REQUEST_TIMEOUT_MS = 5000;
  * Connection to ChasePlane's local WebSocket API (port 8652), shared by every action.
  *
  * Events: "connection" (ready changed), "camera" (active camera or cinematic changed),
- * "flashlight" (flashlight changed), "views" (view list reloaded).
+ * "flashlight" (flashlight changed), "views" (view list reloaded), "traffic" (AI list or tracked aircraft changed).
  */
 export class ChasePlaneClient extends EventEmitter {
 	private ws: WebSocket | null = null;
@@ -41,6 +54,12 @@ export class ChasePlaneClient extends EventEmitter {
 	views: View[] = [];
 	camera: CameraState | null = null;
 	flashlight = false;
+	/** AI traffic in ChasePlane's display order (its current Remote filters apply). */
+	traffic: TrafficAircraft[] = [];
+	/** Aircraft the camera is on, from `camera_runtime_state.ai_traffic_tracking_id`; 0 = none. */
+	trackingId = 0;
+	private readonly trafficById = new Map<number, TrafficAircraft>();
+	private trafficOrder: number[] = [];
 
 	constructor(private readonly url: string) {
 		super();
@@ -60,7 +79,20 @@ export class ChasePlaneClient extends EventEmitter {
 		ws.on("close", () => this.onClose());
 	}
 
+	/**
+	 * Finds the current view for a saved button. World views (towers, traffic...) get new GUIDs,
+	 * so a GUID that is no longer listed falls back to the same name and mode.
+	 */
+	resolveView(saved: { guid?: string; name?: string; mode?: number }): View | undefined {
+		return (
+			this.views.find((v) => v.guid === saved.guid) ??
+			(saved.name === undefined ? undefined : this.views.find((v) => v.name === saved.name && (saved.mode === undefined || v.mode === saved.mode)))
+		);
+	}
+
+	/** ChasePlane replies success even for an unknown GUID, so only listed views are sent. */
 	setView(guid: string): Promise<void> {
+		if (!this.views.some((v) => v.guid === guid)) return Promise.reject(new Error(`view ${guid} is not in get_views`));
 		return this.request("set_view_by_guid", { guid });
 	}
 
@@ -70,6 +102,26 @@ export class ChasePlaneClient extends EventEmitter {
 
 	toggleCinematic(): Promise<void> {
 		return this.request("cam_cinematic_toggle");
+	}
+
+	/** Switches to the World Traffic camera on one AI aircraft (what ChasePlane Remote does on a list click). */
+	viewTraffic(id: number): Promise<void> {
+		return this.request("cam_go_to_traffic", { simobject_id: id });
+	}
+
+	/** Puts the camera back on the user's aircraft (ChasePlane Remote's own return command). */
+	trackUserAircraft(): Promise<void> {
+		return this.request("user_aircraft_track");
+	}
+
+	/** Asks for a full traffic snapshot and live updates. */
+	async watchTraffic(on: boolean): Promise<void> {
+		if (on) {
+			await this.request("request_ai_traffic");
+			await this.request("start_ai_traffic_refresh");
+		} else {
+			await this.request("stop_ai_traffic_refresh");
+		}
 	}
 
 	async refreshViews(): Promise<void> {
@@ -114,12 +166,37 @@ export class ChasePlaneClient extends EventEmitter {
 				}
 				break;
 			}
+			case "camera_runtime_state": {
+				const id = Number(msg.payload?.ai_traffic_tracking_id ?? 0);
+				if (id !== this.trackingId) {
+					this.trackingId = id;
+					this.emit("traffic");
+				}
+				break;
+			}
+			case "ai_traffic":
+				this.onTraffic(msg.payload ?? {});
+				break;
 			case "view_created":
 			case "view_modified":
 			case "view_deleted":
 				this.refreshViews().catch((error) => streamDeck.logger.warn(`get_views failed: ${error.message}`));
 				break;
 		}
+	}
+
+	/** Applies an `ai_traffic` push: a snapshot replaces the list, otherwise added/updated/removed are merged. */
+	private onTraffic(p: { snapshot?: boolean; added?: TrafficAircraft[]; updated?: TrafficAircraft[]; removed?: Array<number | { uId: number }>; order?: number[] }): void {
+		if (p.snapshot) this.trafficById.clear();
+		for (const a of [...(p.added ?? []), ...(p.updated ?? [])]) {
+			if (a && typeof a.uId === "number") this.trafficById.set(a.uId, { ...this.trafficById.get(a.uId), ...a });
+		}
+		for (const r of p.removed ?? []) this.trafficById.delete(typeof r === "number" ? r : r?.uId);
+		if (Array.isArray(p.order)) this.trafficOrder = p.order;
+		const ordered = this.trafficOrder.map((id) => this.trafficById.get(id)).filter((a): a is TrafficAircraft => !!a);
+		const rest = [...this.trafficById.values()].filter((a) => !this.trafficOrder.includes(a.uId));
+		this.traffic = [...ordered, ...rest];
+		this.emit("traffic");
 	}
 
 	private onReply(msg: Message): void {

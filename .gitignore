@@ -8,3 +8,5 @@ node_modules/
 # Local-only icon work output
 tools/glow/backup_pre_glow/
 tools/glow/glow_samples/
+tools/backup_test_profile/
+tools/backup_traffic_page/

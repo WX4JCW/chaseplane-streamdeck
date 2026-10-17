@@ -13,6 +13,9 @@ import { chasePlane, viewLabel } from "../chaseplane/client";
 
 type CameraSettings = {
 	guid?: string;
+	/** Kept alongside the GUID so world views, whose GUIDs change, can be found again. */
+	name?: string;
+	mode?: number;
 };
 
 /**
@@ -28,7 +31,10 @@ export class CameraAction extends SingletonAction<CameraSettings> {
 		super();
 		chasePlane.on("camera", () => this.renderAll());
 		chasePlane.on("connection", () => this.renderAll());
-		chasePlane.on("views", () => this.sendViews());
+		chasePlane.on("views", () => {
+			this.sendViews();
+			this.renderAll();
+		});
 	}
 
 	override onWillAppear(ev: WillAppearEvent<CameraSettings>): Promise<void> | void {
@@ -46,15 +52,17 @@ export class CameraAction extends SingletonAction<CameraSettings> {
 	}
 
 	override async onKeyDown(ev: KeyDownEvent<CameraSettings>): Promise<void> {
-		const { guid } = ev.payload.settings;
-		if (!guid) {
+		const saved = this.settingsById.get(ev.action.id) ?? ev.payload.settings;
+		const view = chasePlane.resolveView(saved);
+		if (!view) {
+			streamDeck.logger.warn(`no view for ${JSON.stringify(saved)}`);
 			await ev.action.showAlert();
 			return;
 		}
 		try {
-			await chasePlane.setView(guid);
+			await chasePlane.setView(view.guid);
 		} catch (error) {
-			streamDeck.logger.error(`set_view_by_guid ${guid} failed: ${(error as Error).message}`);
+			streamDeck.logger.error(`set_view_by_guid ${view.guid} failed: ${(error as Error).message}`);
 			await ev.action.showAlert();
 		}
 	}
@@ -78,8 +86,15 @@ export class CameraAction extends SingletonAction<CameraSettings> {
 	private async render(id: string): Promise<void> {
 		const target = this.actions.find((a) => a.id === id);
 		if (!target?.isKey()) return;
-		const guid = this.settingsById.get(id)?.guid;
-		const active = !!guid && chasePlane.activeGuid === guid;
+		const saved = this.settingsById.get(id) ?? {};
+		const view = chasePlane.resolveView(saved);
+		// Keep the saved GUID, name and mode in step with ChasePlane (new world-view GUIDs, renamed views).
+		if (view && (view.guid !== saved.guid || view.name !== saved.name || view.mode !== saved.mode)) {
+			const updated = { ...saved, guid: view.guid, name: view.name, mode: view.mode };
+			this.settingsById.set(id, updated);
+			await target.setSettings(updated);
+		}
+		const active = !!view && chasePlane.activeGuid === view.guid;
 		await target.setState(active ? 1 : 0);
 	}
 }
