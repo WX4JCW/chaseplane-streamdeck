@@ -7,6 +7,7 @@ export type View = {
 	guid: string;
 	name: string;
 	mode: number;
+	profile_theme?: string;
 	has_left_suffix?: boolean;
 	has_right_suffix?: boolean;
 	has_fwd_suffix?: boolean;
@@ -156,6 +157,11 @@ export class ChasePlaneClient extends EventEmitter {
 				break;
 			case "cam_mode_set":
 				this.camera = msg.payload as CameraState;
+				// After a sim restart the bridge can answer before the aircraft's views are loaded;
+				// fetch again once ChasePlane reports them loaded and the list is still empty.
+				if (msg.payload?.views_loaded === true && this.views.length === 0) {
+					this.refreshViews().catch((error) => streamDeck.logger.warn(`get_views failed: ${error.message}`));
+				}
 				this.emit("camera");
 				break;
 			case "sim_state": {

@@ -55,14 +55,14 @@ export function slotLines(a: TrafficAircraft): [string, string, string] {
 	return [identity, type, [phase, distance].filter(Boolean).join(" ")];
 }
 
-const escape = (s: string): string => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+export const escape = (s: string): string => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 /** Usable text width on the 144 px key, and an average bold glyph width as a share of font size. */
 const TEXT_WIDTH = 128;
 const GLYPH_WIDTH = 0.62;
 const MIN_SIZE = 15;
 
 /** Shrinks the font until the line fits; cuts with an ellipsis only below the minimum size. */
-function fit(value: string, size: number): { value: string; size: number } {
+export function fit(value: string, size: number): { value: string; size: number } {
 	const fitted = Math.floor(TEXT_WIDTH / (value.length * GLYPH_WIDTH));
 	if (fitted >= size) return { value, size };
 	if (fitted >= MIN_SIZE) return { value, size: fitted };

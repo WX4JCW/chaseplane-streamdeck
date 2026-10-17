@@ -10,12 +10,24 @@ import streamDeck, {
 import type { JsonValue } from "@elgato/utils";
 
 import { chasePlane, viewLabel } from "../chaseplane/client";
+import { themeColors, viewTags } from "../chaseplane/themes";
+import { nameLines, viewImage } from "./view-key";
+
+/**
+ * Longest name that fits one title line at the generated keys' bold size 9: about 12 characters,
+ * 10 when all capitals (wider glyphs). Stream Deck clips a longer title instead of wrapping it.
+ */
+const titleMax = (name: string): number => (name === name.toUpperCase() ? 10 : 12);
 
 type CameraSettings = {
 	guid?: string;
 	/** Kept alongside the GUID so world views, whose GUIDs change, can be found again. */
 	name?: string;
 	mode?: number;
+	/** The plugin draws the key (name and tags in the theme color); set by the generator for views without a glyph. */
+	draw?: boolean;
+	/** The plugin keeps the title on ChasePlane's current name and tags; the title color stays the key's own. */
+	liveTitle?: boolean;
 };
 
 /**
@@ -26,6 +38,8 @@ type CameraSettings = {
 @action({ UUID: "com.acms.chaseplane.camera" })
 export class CameraAction extends SingletonAction<CameraSettings> {
 	private readonly settingsById = new Map<string, CameraSettings>();
+	private readonly drawnById = new Map<string, string>();
+	private readonly titleById = new Map<string, string>();
 
 	constructor() {
 		super();
@@ -44,6 +58,8 @@ export class CameraAction extends SingletonAction<CameraSettings> {
 
 	override onWillDisappear(ev: WillDisappearEvent<CameraSettings>): void {
 		this.settingsById.delete(ev.action.id);
+		this.drawnById.delete(ev.action.id);
+		this.titleById.delete(ev.action.id);
 	}
 
 	override onDidReceiveSettings(ev: DidReceiveSettingsEvent<CameraSettings>): Promise<void> | void {
@@ -95,6 +111,31 @@ export class CameraAction extends SingletonAction<CameraSettings> {
 			await target.setSettings(updated);
 		}
 		const active = !!view && chasePlane.activeGuid === view.guid;
+		const current = this.settingsById.get(id) ?? saved;
+
+		if (current.draw) {
+			// Drawn key: the image carries the name and the glow, so state stays 0 and the title stays empty.
+			const name = view?.name ?? current.name ?? "?";
+			const tags = view ? viewTags(view) : "";
+			const colors = view ? themeColors(view.profile_theme) : { glow: "#555555", text: "#777777" };
+			const image = viewImage(name, tags, colors, active);
+			if (this.drawnById.get(id) !== image) {
+				this.drawnById.set(id, image);
+				await target.setImage(image, { state: 0 });
+				await target.setTitle("");
+			}
+			await target.setState(0);
+			return;
+		}
+
+		if (current.liveTitle && view) {
+			const tags = viewTags(view);
+			const title = [...nameLines(view.name, titleMax(view.name)), ...(tags ? [tags] : [])].join("\n");
+			if (this.titleById.get(id) !== title) {
+				this.titleById.set(id, title);
+				await target.setTitle(title);
+			}
+		}
 		await target.setState(active ? 1 : 0);
 	}
 }

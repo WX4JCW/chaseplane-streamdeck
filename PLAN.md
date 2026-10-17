@@ -173,13 +173,19 @@ M1. Layout file and reader (`tools/generate/`). Reads the aircraft folders read 
 
 M2. One new folder. Writes CABIN for the iFly as a new folder key and folder page in ChasePlaneTest (Stream Deck closed, backup first). Owner opens it.
 Proves the one unverified write: creating a folder page that did not exist.
+Done (owner, 2026-10-17: "it works ... the cabin page is perfect"): `tools/generate/plan.mjs` (live `get_views`), `render.py` (tinted glyphs, glow, preview), `write.cjs` (backup, new page + folder key, `state.json` for in-place reruns) wrote CABIN (24 views + flashlight) at ChasePlaneTest 8,2. Creating a folder page is verified.
 
 M3. Drawn camera keys. Camera action draws a text key in the folder color when a button has no image, so views without a glow icon need no new art. Uses the proven SVG path.
 
+M3 built (2026-10-17): Camera settings `draw` (plugin draws name and tags in the view's live theme color, glow when active; `src/actions/view-key.ts`, `src/chaseplane/themes.ts`) and `liveTitle` (plugin keeps the title on ChasePlane's current name; title color stays the key's `TitleColor`).
+
 M4. Full folder set for the iFly in ChasePlaneTest: all folders, flow layouts, OTHER, TRAFFIC link.
+Written (2026-10-17), awaiting the owner's check on the device: COCKPIT (PIC + Mounted, 14) 0,0; SYSTEMS (26) 1,0; EXTERIOR (Airframe + Chase, 14) 2,0; GROUND SVC (Misc without Terminal, 6) 3,0; AIRPORT (Orbit + World + Terminal, 12) 4,0; CABIN replaced in place at the owner's 8,1. All 96 views placed, none unplaced, so no OTHER folder. 12 drawn keys, 84 glyph keys. COCKPIT was split from SYSTEMS because PIC + Systems + Mounted (40) exceeds the 35 free keys, following ChasePlane's own groups. `write.cjs` keeps a folder key where the owner moved it.
 
 M5. One generated profile per aircraft, updated in place on rerun (the generator records each profile's ID). Stream Deck closed for writes.
 Unverified: creating a new profile directory from scratch (root manifest with Device, Name, Pages, Version). Check: generate one, start Stream Deck, confirm it lists and opens.
+
+Later (owner, 2026-10-17: "touch strip after we get the dynamic pages, dont get ahead"): page title on the + XL touch strip. Not before the dynamic pages are done. Mockup: `tools/generate/out/title_options_page.png`; + XL template: `tools/generate/template_plusxl.png`.
 
 M6 (optional). In-plugin dynamic page for the "Test Dynamic Folder": theme tabs, paging and view slots filled live from `get_views`, for views not on any generated page and for aircraft without a generated profile.
 
@@ -203,7 +209,11 @@ Owner, 2026-10-17: "we will need a text title for each view like the existing or
 - The generator writes each camera key's title (view name, suffix tags shortened: "EFB L", "Lavatories L FWD") and `TitleColor` = the theme's text color (72% lightness), plus `FontSize`, `FontFamily`, `TitleAlignment: bottom`. These state fields exist in profiles Stream Deck wrote (Flight Panel buttons carry them).
 - The plugin calls `setTitle` with the current view name, so renames made in ChasePlane show without regenerating (as the stalexcorp plugin does). `setTitle` carries text only (SDK `SetTitle` payload: title, state, target), so the color stays the key's `TitleColor`.
 - Glyph layout leaves room for the title: glyph moved up and slightly smaller; glow outline kept clear of the text.
-Unverified: that a plugin `setTitle` keeps the key's `TitleColor`. Check: one test key with a colored title, then a rename in ChasePlane.
+Verified on the device (2026-10-17, GROUND SVC screenshot):
+- A Title stored on the key wins over the plugin's `setTitle`; generated keys therefore store no Title, only `TitleColor`, font and size.
+- With no stored Title, the plugin's `setTitle` text shows in the key's `TitleColor`.
+- Stream Deck clips a long title instead of wrapping it; the plugin splits names over two balanced lines past ~12 characters (10 when all capitals).
+- After a sim crash the plugin had connected before the aircraft's views loaded and kept an empty list; it now fetches views again when `cam_mode_set` reports `views_loaded` and its list is empty (cause inferred from timing, not reproduced).
 
 Possible adjustment: Systems (grey-green) and Misc (brown-grey) are muted; if they read too dim on the hardware, raise their saturation slightly, same hue.
 

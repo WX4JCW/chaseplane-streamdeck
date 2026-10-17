@@ -1,0 +1,170 @@
+{
+	"profile": "227856A2-5D79-4BA9-A9DA-769A3F195C15",
+	"parentPage": "A0D29719-64E3-4B2E-8A44-C77CB9CD9CAE",
+	"comment": "Positions are col,row on the 9x4 + XL keypad; 0,0 is the back key. A place without an icon becomes a key the plugin draws.",
+	"folders": [
+		{
+			"name": "COCKPIT",
+			"parentKey": "0,0",
+			"themes": ["ONBOARD_PIC", "ONBOARD_MOUNTED"],
+			"colorTheme": "ONBOARD_PIC",
+			"folderIcon": "Folder_Cockpit_Controls",
+			"comment": "Seated looking forward: captain side left, first officer right; positions on row 2, jumpseats row 3, GoPros row 4.",
+			"place": [
+				{ "name": "Prep", "pos": "1,0" },
+				{ "name": "AFK", "pos": "2,0" },
+				{ "name": "Pilot-lights", "pos": "3,0", "icon": "737_Overhead" },
+				{ "name": "Pilot", "pos": "1,1", "icon": "Pilot_1" },
+				{ "name": "Pilot 2", "pos": "2,1", "icon": "Pilot_1" },
+				{ "name": "Pilot wingview", "pos": "3,1", "icon": "Pilot_1" },
+				{ "name": "First Officer", "pos": "6,1", "icon": "Pilot_1" },
+				{ "name": "Jumpseat", "tags": "L", "pos": "1,2", "icon": "Pilot_1" },
+				{ "name": "Jumpseat", "tags": "", "pos": "4,2", "icon": "GoPro_Cam" },
+				{ "name": "Jumpseat", "tags": "R", "pos": "6,2", "icon": "Pilot_1" },
+				{ "name": "CPT GoPro 1", "pos": "1,3", "icon": "GoPro_Cam" },
+				{ "name": "CPT GoPro 2", "pos": "2,3", "icon": "GoPro_Cam" },
+				{ "name": "GoPro Nose", "pos": "4,3", "icon": "GoPro_Cam" },
+				{ "name": "Co-pilot GoPro", "pos": "6,3", "icon": "GoPro_Cam" }
+			],
+			"extras": [{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }],
+			"fillFree": ["4,0", "5,0", "6,0", "7,0", "8,0", "4,1", "5,1", "7,1", "8,1"]
+		},
+		{
+			"name": "SYSTEMS",
+			"parentKey": "1,0",
+			"themes": ["ONBOARD_SYSTEMS"],
+			"colorTheme": "ONBOARD_SYSTEMS",
+			"folderIcon": "737_Overhead",
+			"comment": "Flight deck from the top down: overhead row 1, glareshield and displays row 2, FMC/CDU and radios row 3, throttles row 4; captain side left, first officer right.",
+			"place": [
+				{ "name": "UPPER PANEL", "pos": "1,0", "icon": "737_Overhead" },
+				{ "name": "Upper Overhead", "pos": "2,0", "icon": "737_Overhead" },
+				{ "name": "Overhead", "pos": "3,0", "icon": "737_Overhead" },
+				{ "name": "Overhead", "pos": "4,0", "icon": "737_Overhead" },
+				{ "name": "Lights", "pos": "5,0", "icon": "737_Overhead" },
+				{ "name": "LOWER PANEL", "pos": "6,0", "icon": "737_Overhead" },
+				{ "name": "Cabin Panel", "pos": "7,0" },
+				{ "name": "HUD", "tags": "L", "pos": "0,1" },
+				{ "name": "EFB", "tags": "L", "pos": "1,1", "icon": "EFB" },
+				{ "name": "EFB CLOSER", "pos": "2,1", "icon": "EFB" },
+				{ "name": "MCP", "pos": "3,1", "icon": "MCP_Inverse" },
+				{ "name": "MCP EFIS", "pos": "4,1", "icon": "MCP_Inverse" },
+				{ "name": "Instrument Panel", "pos": "5,1", "icon": "EICAS_Inverse" },
+				{ "name": "MFD", "pos": "6,1", "icon": "EICAS_Inverse" },
+				{ "name": "EFB", "tags": "R", "pos": "7,1", "icon": "EFB" },
+				{ "name": "HUD", "tags": "R", "pos": "8,1" },
+				{ "name": "Radio", "tags": "L", "pos": "0,2", "icon": "Radio_Panel_Inverse" },
+				{ "name": "FMC", "pos": "1,2", "icon": "FFMC" },
+				{ "name": "CDU Close", "pos": "2,2", "icon": "FFMC" },
+				{ "name": "CDU Both", "pos": "3,2", "icon": "FFMC" },
+				{ "name": "FMC and Autobrake", "pos": "4,2", "icon": "FFMC" },
+				{ "name": "Radios", "pos": "5,2", "icon": "Radio_Panel_Inverse" },
+				{ "name": "Radio", "tags": "R", "pos": "8,2", "icon": "Radio_Panel_Inverse" },
+				{ "name": "Throttle", "tags": "L", "pos": "0,3", "icon": "737_Throttle_Inverse" },
+				{ "name": "Throttle", "tags": "L", "pos": "1,3", "icon": "737_Throttle_Inverse" },
+				{ "name": "Throttle", "tags": "R", "pos": "8,3", "icon": "737_Throttle_Inverse" }
+			],
+			"extras": [{ "action": "flashlight", "pos": "4,3", "icon": "Flashlight_Beam" }],
+			"fillFree": ["8,0", "6,2", "7,2", "2,3", "3,3", "5,3", "6,3", "7,3"]
+		},
+		{
+			"name": "CABIN",
+			"parentKey": "8,1",
+			"themes": ["ONBOARD_CABIN"],
+			"colorTheme": "ONBOARD_CABIN",
+			"folderIcon": "Folder_Cabin_Interior",
+			"place": [
+				{ "name": "Cabin", "pos": "1,0", "icon": "Galley" },
+				{ "name": "Cabin Fwd", "pos": "2,0", "icon": "Galley" },
+				{ "name": "Cabin Mid", "pos": "3,0", "icon": "Galley" },
+				{ "name": "Cabin Aft", "pos": "4,0", "icon": "Galley" },
+				{ "name": "FWD PSU 1", "pos": "5,0", "icon": "Galley" },
+				{ "name": "FWD PSU 2", "pos": "6,0", "icon": "Galley" },
+				{ "name": "Lavatories", "tags": "L FWD", "pos": "0,3", "icon": "Toilet_Purple" },
+				{ "name": "Lavatories", "tags": "R AFT", "pos": "1,3", "icon": "Toilet_Purple" }
+			],
+			"seatMap": {
+				"pattern": "^(\\d+)([A-Z])$",
+				"letterRow": { "A": 1, "F": 2 },
+				"firstColumn": 0,
+				"icon": "Seat_Purple",
+				"exitRows": { "14": "ESeat_Purple" }
+			},
+			"extras": [{ "action": "flashlight", "pos": "7,3", "icon": "Flashlight_Beam" }],
+			"fillFree": ["2,3", "3,3", "4,3", "5,3", "6,3", "8,0", "8,1", "8,2", "8,3"]
+		},
+		{
+			"name": "EXTERIOR",
+			"parentKey": "2,0",
+			"themes": ["OUTSIDE_AIRFRAME", "OUTSIDE_CHASE"],
+			"colorTheme": "OUTSIDE_AIRFRAME",
+			"folderIcon": "Folder_Aircraft_Exterior",
+			"comment": "The aircraft from above, nose at the top centre: left wing on the left half, right wing on the right, chase behind the tail.",
+			"place": [
+				{ "name": "Nose Gear", "pos": "4,0", "icon": "Nose2" },
+				{ "name": "Wingtip", "tags": "L", "pos": "1,1", "icon": "Left_Wing2" },
+				{ "name": "Wing LE", "tags": "L", "pos": "2,1", "icon": "Left_Wing2" },
+				{ "name": "Wingview left", "pos": "3,1", "icon": "Left_Wing2" },
+				{ "name": "Wingview right", "pos": "5,1", "icon": "Right_Wing2" },
+				{ "name": "Wing LE", "tags": "R", "pos": "6,1", "icon": "Right_Wing2" },
+				{ "name": "Wingtip", "tags": "R", "pos": "7,1", "icon": "Right_Wing2" },
+				{ "name": "left wing close", "pos": "2,2", "icon": "Left_Wing2" },
+				{ "name": "ENGINE 1", "pos": "3,2", "icon": "NO1_Engine2" },
+				{ "name": "ENGINE 2", "pos": "5,2", "icon": "NO2_Engine2" },
+				{ "name": "right wing close", "pos": "6,2", "icon": "Right_Wing2" },
+				{ "name": "Wingtip - left", "pos": "2,3", "icon": "Left_Wing2" },
+				{ "name": "Chase View", "pos": "4,3" },
+				{ "name": "Wingtip - right", "pos": "6,3", "icon": "Right_Wing2" }
+			],
+			"extras": [{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }],
+			"fillFree": ["8,0", "8,1", "8,2", "0,3", "1,3", "7,3"]
+		},
+		{
+			"name": "GROUND SVC",
+			"parentKey": "3,0",
+			"themes": ["OUTSIDE_MISC"],
+			"exclude": ["Terminal"],
+			"colorTheme": "OUTSIDE_MISC",
+			"folderIcon": "Fueling_Orange",
+			"comment": "Turnaround along the fuselage, front to back; walkaround below.",
+			"place": [
+				{ "name": "CATERING FRONT", "pos": "1,1", "icon": "Catering_Truck_Orange" },
+				{ "name": "Jetway", "pos": "2,1" },
+				{ "name": "Cargo Loading", "pos": "3,1", "icon": "Baggage_Loading_Orange" },
+				{ "name": "FUELING", "pos": "4,1", "icon": "Fueling_Orange" },
+				{ "name": "CATERING REAR", "pos": "5,1", "icon": "Catering_Truck_Orange" },
+				{ "name": "FRONT WALK AROUND", "pos": "1,2", "icon": "Walkaround_LightBlue" }
+			],
+			"extras": [{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }],
+			"fillFree": ["6,1", "7,1", "2,2", "3,2", "4,2"]
+		},
+		{
+			"name": "AIRPORT",
+			"parentKey": "4,0",
+			"themes": ["OUTSIDE_ORBIT", "WORLD_DEFAULT", "WORLD_TOWER", "WORLD_RUNWAY", "WORLD_PARKING", "WORLD_SPOTTING", "WORLD_TRAFFIC"],
+			"include": ["Terminal"],
+			"colorTheme": "OUTSIDE_ORBIT",
+			"folderIcon": "Folder_Airport_Walkaround",
+			"comment": "Near to far: around the aircraft row 2, at the airport row 3, in the world and watching others row 4.",
+			"place": [
+				{ "name": "Spot View", "pos": "1,1", "icon": "Orbit2" },
+				{ "name": "Nose View", "pos": "2,1", "icon": "Orbit2" },
+				{ "name": "Orbit", "pos": "3,1", "icon": "Orbit2" },
+				{ "name": "Terminal", "pos": "1,2", "icon": "Terminal 2b" },
+				{ "name": "Parking", "pos": "2,2" },
+				{ "name": "Runway", "pos": "3,2" },
+				{ "name": "Tower", "pos": "4,2", "icon": "Tower2" },
+				{ "name": "Explore", "pos": "1,3" },
+				{ "name": "FlyBy", "pos": "2,3" },
+				{ "name": "Overview", "pos": "3,3" },
+				{ "name": "Spotting", "pos": "5,3", "icon": "Spotting_Red" },
+				{ "name": "Traffic", "pos": "6,3", "icon": "Traffic_Red" }
+			],
+			"extras": [
+				{ "action": "cinematic", "pos": "8,1", "icon": "Cinematic_Camera" },
+				{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }
+			],
+			"fillFree": ["4,1", "5,1", "5,2", "6,2"]
+		}
+	]
+}
