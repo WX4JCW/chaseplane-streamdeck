@@ -48,6 +48,28 @@ const block = (name, uuid, plugin, settings, states) => ({
 });
 const readJson = (f) => JSON.parse(fs.readFileSync(f, "utf8"));
 
+// Pinned keys: copied as-is (settings, titles, images) from the owner's source page; read only.
+const pinned = [];
+if (plan.pinned) {
+	const srcDir = path.join(process.env.APPDATA, "Elgato/StreamDeck/ProfilesV3", `${plan.pinned.profile}.sdProfile`, "Profiles", plan.pinned.page);
+	const srcKeys = readJson(path.join(srcDir, "manifest.json")).Controllers.find((c) => c.Type === "Keypad").Actions ?? {};
+	for (const pos of plan.pinned.keys) if (srcKeys[pos]) pinned.push({ pos, action: srcKeys[pos], srcDir });
+}
+/** Puts a fresh copy of each pinned key at its position in `keys`, copying its images into `dir`. */
+function placePinned(keys, dir, onlyIfFree) {
+	for (const p of pinned) {
+		const existing = keys[p.pos];
+		if (onlyIfFree && existing && existing.UUID !== p.action.UUID) {
+			console.log(`  pinned ${p.pos} skipped: taken by ${existing.UUID}`);
+			continue;
+		}
+		const copy = JSON.parse(JSON.stringify(p.action));
+		copy.ActionID = crypto.randomUUID();
+		if (!DRY) for (const s of copy.States ?? []) if (s.Image) fs.copyFileSync(path.join(p.srcDir, s.Image), path.join(dir, s.Image));
+		keys[p.pos] = copy;
+	}
+}
+
 if (!DRY) {
 	const backup = path.join(HERE, "backup", new Date().toISOString().replace(/[:.]/g, "-"));
 	fs.cpSync(PROFILE, backup, { recursive: true });
@@ -82,7 +104,10 @@ for (const folder of plan.folders) {
 			// instead of the plugin's setTitle. The plugin supplies the (wrapped, live) text; the key keeps color and font.
 			keys[pos] = block("Camera", `${PLUGIN.UUID}.camera`, PLUGIN, { guid: k.guid, name: k.name, mode: k.mode, liveTitle: true }, [titled(images[0], "", k.text, true), titled(images[1], "", k.text, true)]);
 		} else {
-			keys[pos] = block(k.kind[0].toUpperCase() + k.kind.slice(1), `${PLUGIN.UUID}.${k.kind}`, PLUGIN, {}, [{ Image: images[0] }, { Image: images[1] }]);
+			// Flashlight, cinematic, traffic slot: two states; my-aircraft and traffic-page: one (as in the plugin manifest).
+			const states = ["my-aircraft", "traffic-page"].includes(k.kind) ? [{}] : [{ Image: images[0] }, { Image: images[1] }];
+			const name = { "traffic-slot": "Traffic Slot", "traffic-page": "Traffic Page", "my-aircraft": "My Aircraft" }[k.kind] ?? k.kind[0].toUpperCase() + k.kind.slice(1);
+			keys[pos] = block(name, `${PLUGIN.UUID}.${k.kind}`, PLUGIN, k.settings ?? {}, states);
 		}
 	}
 	console.log(`${DRY ? "would write" : "write"} ${folder.name}: page ${pageId} (${state.folders[folder.name] ? "replace" : "new"}), ${Object.keys(keys).length} keys, folder key at ${folderPos}${moved ? " (kept where the owner put it)" : ""}`);
@@ -91,6 +116,7 @@ for (const folder of plan.folders) {
 	fs.rmSync(pageDir, { recursive: true, force: true });
 	fs.mkdirSync(path.join(pageDir, "Images"), { recursive: true });
 	for (const f of fs.readdirSync(src)) if (f !== "folder.png") fs.copyFileSync(path.join(src, f), path.join(pageDir, "Images", f));
+	placePinned(keys, pageDir, false);
 	fs.writeFileSync(
 		path.join(pageDir, "manifest.json"),
 		JSON.stringify({ Controllers: [{ Actions: keys, Type: "Keypad" }, { Actions: null, Type: "Encoder" }], Icon: "", Name: "" }),
@@ -120,6 +146,11 @@ for (const k of plan.keyOnly ?? []) {
 	if (DRY) continue;
 	fs.copyFileSync(path.join(OUT, "img", k.name, "folder.png"), path.join(PAGES, plan.parentPage, image));
 	parentKeys[pos].States[0] = { ...parentKeys[pos].States[0], ...titled(image, k.name, k.text) };
+}
+
+if (plan.pinned?.onParent) {
+	console.log(`${DRY ? "would pin" : "pin"} ${pinned.map((p) => p.pos).join(" ")} on the parent page where free`);
+	placePinned(parentKeys, path.join(PAGES, plan.parentPage), true);
 }
 
 if (!DRY) {

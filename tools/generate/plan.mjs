@@ -88,6 +88,23 @@ const { metadata, views } = await liveViews();
 const plan = { aircraft: metadata.aircraft_readable, profile: layout.profile, parentPage: layout.parentPage, folders: [] };
 
 for (const folder of layout.folders) {
+	if (folder.kind === "traffic") {
+		// Live traffic page: the plugin fills the slots, so only positions and settings are planned.
+		const keys = {};
+		for (const c of folder.controls ?? []) keys[c.pos] = { kind: c.action, settings: c.settings ?? {}, title: "" };
+		const pinned = new Set(layout.pinned?.keys ?? []);
+		let slot = 1;
+		for (let row = 0; row < 4; row++)
+			for (let col = 0; col < 9; col++) {
+				const pos = `${col},${row}`;
+				if ((row === 0 && col === 0) || pinned.has(pos) || keys[pos]) continue;
+				keys[pos] = { kind: "traffic-slot", settings: { slot: slot++ }, title: "" };
+			}
+		const colors = folder.color ? { glow: folder.color, text: folder.color } : themeColors(folder.colorTheme);
+		plan.folders.push({ name: folder.name, kind: "traffic", parentKey: folder.parentKey, folderIcon: folder.folderIcon, ...colors, keys });
+		console.log(`${folder.name}: traffic page, ${slot - 1} slots, controls ${(folder.controls ?? []).map((c) => c.action + "@" + c.pos).join(" ")}`);
+		continue;
+	}
 	const pool = views
 		.filter((v) => (folder.themes.includes(v.profile_theme) && !inList(folder.exclude, v.name)) || inList(folder.include, v.name))
 		.map((v) => ({ ...v, tags: tags(v) }));
@@ -130,7 +147,12 @@ for (const folder of layout.folders) {
 		const rank = (v) => (folder.themes.includes(v.profile_theme) ? folder.themes.indexOf(v.profile_theme) : folder.themes.length);
 		const ordered = pool.filter((v) => !used.has(v.guid)).sort((a, b) => rank(a) - rank(b) || a.index - b.index);
 		const slots = [];
-		for (let row = 0; row < 4; row++) for (let col = 0; col < 9; col++) if (!(row === 0 && col === 0) && !keys[`${col},${row}`]) slots.push(`${col},${row}`);
+		const pinned = new Set(layout.pinned?.keys ?? []);
+		for (let row = 0; row < 4; row++)
+			for (let col = 0; col < 9; col++) {
+				const pos = `${col},${row}`;
+				if (!(row === 0 && col === 0) && !keys[pos] && !pinned.has(pos)) slots.push(pos);
+			}
 		for (const v of ordered) {
 			const pos = slots.shift();
 			if (pos) key(pos, v, iconFor(v));
@@ -151,6 +173,9 @@ for (const folder of layout.folders) {
 	const cams = Object.values(keys).filter((k) => k.kind === "camera");
 	console.log(`${folder.name}: ${pool.length} views; placed ${cams.length} (${cams.filter((k) => k.draw).length} drawn); filled into free slots ${unplaced.length}`);
 }
+
+plan.pinned = layout.pinned ?? null;
+for (const f of plan.folders) for (const pos of plan.pinned?.keys ?? []) if (f.keys[pos]) console.log(`  pinned clash: ${f.name} ${pos} holds "${f.keys[pos].name ?? f.keys[pos].kind}"`);
 
 // Folders the generator does not build (e.g. the live TRAFFIC page): only their folder key is restyled.
 plan.keyOnly = (layout.keyOnly ?? []).map((k) => ({

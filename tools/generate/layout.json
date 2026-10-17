@@ -73,7 +73,7 @@
 			"extras": [
 				{
 					"action": "flashlight",
-					"pos": "8,3",
+					"pos": "7,3",
 					"icon": "Flashlight_Beam"
 				}
 			]
@@ -90,7 +90,7 @@
 			"extras": [
 				{
 					"action": "flashlight",
-					"pos": "8,3",
+					"pos": "7,3",
 					"icon": "Flashlight_Beam"
 				}
 			]
@@ -172,11 +172,7 @@
 				"3,3",
 				"4,3",
 				"5,3",
-				"6,3",
-				"8,0",
-				"8,1",
-				"8,2",
-				"8,3"
+				"6,3"
 			]
 		},
 		{
@@ -192,7 +188,7 @@
 			"extras": [
 				{
 					"action": "flashlight",
-					"pos": "8,3",
+					"pos": "7,3",
 					"icon": "Flashlight_Beam"
 				}
 			]
@@ -212,7 +208,7 @@
 			"extras": [
 				{
 					"action": "flashlight",
-					"pos": "8,3",
+					"pos": "7,3",
 					"icon": "Flashlight_Beam"
 				}
 			]
@@ -238,24 +234,55 @@
 			"extras": [
 				{
 					"action": "cinematic",
-					"pos": "7,3",
+					"pos": "6,3",
 					"icon": "Cinematic_Camera"
 				},
 				{
 					"action": "flashlight",
-					"pos": "8,3",
+					"pos": "7,3",
 					"icon": "Flashlight_Beam"
+				}
+			]
+		},
+		{
+			"name": "TRAFFIC",
+			"kind": "traffic",
+			"parentKey": "6,0",
+			"color": "#EA2C27",
+			"folderIcon": "Traffic_Red",
+			"comment": "Live traffic page (plugin fills the slots). Slots from A2 left to right in columns 1-8; previous page D6, next page D7, My Aircraft D8; column 9 pinned.",
+			"controls": [
+				{
+					"action": "traffic-page",
+					"pos": "5,3",
+					"settings": {
+						"direction": -1
+					}
+				},
+				{
+					"action": "traffic-page",
+					"pos": "6,3",
+					"settings": {
+						"direction": 1
+					}
+				},
+				{
+					"action": "my-aircraft",
+					"pos": "7,3"
 				}
 			]
 		}
 	],
-	"keyOnly": [
-		{
-			"name": "TRAFFIC",
-			"page": "FE5831E1-5723-4DA0-8CBB-DFA035454D37",
-			"color": "#EA2C27",
-			"folderIcon": "Traffic_Red",
-			"comment": "Existing live traffic folder: only its folder key is restyled; the page is not touched. Red of the owner's Traffic_Red icon (owner: make traffic red please)."
-		}
-	]
+	"pinned": {
+		"comment": "Copied as-is from the owner's Flight Panel pinned page onto every generated folder page and, where free, the parent page (owner: \"i want these pinned like they are as you see\"). Generated content never uses these positions.",
+		"profile": "493D868E-BBB5-4BA8-ADEF-17D95E4E95D6",
+		"page": "742AC2A2-6691-403E-ABFB-3CC9436F9577",
+		"keys": [
+			"8,0",
+			"8,1",
+			"8,2",
+			"8,3"
+		],
+		"onParent": true
+	}
 }
