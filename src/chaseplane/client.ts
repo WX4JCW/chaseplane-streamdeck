@@ -75,7 +75,16 @@ export class ChasePlaneClient extends EventEmitter {
 		const ws = new WebSocket(this.url);
 		this.ws = ws;
 		ws.on("open", () => ws.send(JSON.stringify({ message: "api_connect", payload: { client_name: "ACMS ChasePlane Cameras" } })));
-		ws.on("message", (raw) => this.onMessage(JSON.parse(raw.toString()) as Message));
+		ws.on("message", (raw) => {
+			// ChasePlane occasionally sends non-JSON text (seen: "CP_PING::"); skip anything that does not parse.
+			let msg: Message;
+			try {
+				msg = JSON.parse(raw.toString()) as Message;
+			} catch {
+				return;
+			}
+			this.onMessage(msg);
+		});
 		ws.on("error", (error) => streamDeck.logger.debug(`ChasePlane socket error: ${error.message}`));
 		ws.on("close", () => this.onClose());
 	}

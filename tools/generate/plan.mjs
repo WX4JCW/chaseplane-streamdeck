@@ -59,7 +59,12 @@ async function liveViews() {
 		const timer = setTimeout(() => reject(new Error("ChasePlane did not answer get_views")), 8000);
 		ws.on("error", reject);
 		ws.on("message", (raw) => {
-			const m = JSON.parse(raw);
+			let m;
+			try {
+				m = JSON.parse(raw); // ChasePlane occasionally sends non-JSON text ("CP_PING::")
+			} catch {
+				return;
+			}
 			if (m.message !== "api_reply" || m.request_id !== "plan") return;
 			let p = m.payload;
 			while (p && p.payload && p.message) p = p.payload;
