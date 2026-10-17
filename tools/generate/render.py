@@ -19,8 +19,9 @@ BAR = 5 / 72  # top-bar height in the -on source PNGs
 
 SIZE = 288
 INSET, RADIUS, STROKE = 14, 46, 5
-GLYPH_BOX = 0.46   # glyph fits in this share of the key
-GLYPH_Y = 0.40     # glyph centre, as a share of key height (title sits below)
+GLYPH_W = 0.78     # glyph fits in this share of the key's width...
+GLYPH_H = 0.56     # ...and of its height, leaving room for a two-line title
+GLYPH_Y = 0.39     # glyph centre, as a share of key height (title sits below)
 
 
 def rgb(hex_color):
@@ -64,7 +65,7 @@ def place(off_layer, on_layer):
     mask = lambda g: g.getchannel("A").point(lambda v: 255 if v > 12 else 0)
     bbox = ImageChops.lighter(mask(off_layer), mask(on_layer)).getbbox()
     w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    scale = SIZE * GLYPH_BOX / max(w, h)
+    scale = min(SIZE * GLYPH_W / w, SIZE * GLYPH_H / h)
     size = (max(1, round(w * scale)), max(1, round(h * scale)))
     out = []
     for g in (off_layer, on_layer):

@@ -91,9 +91,11 @@ for (const folder of layout.folders) {
 		used.add(v.guid);
 	};
 
-	for (const p of folder.place) {
+	const iconFor = (v) => layout.icons?.[`${v.name}|${v.tags}`] ?? layout.icons?.[v.name] ?? null;
+
+	for (const p of folder.place ?? []) {
 		const v = pool.find((x) => !used.has(x.guid) && x.name === p.name && (p.tags === undefined || x.tags === p.tags));
-		if (v) key(p.pos, v, p.icon);
+		if (v) key(p.pos, v, p.icon ?? iconFor(v));
 		else console.log(`  stale: ${folder.name} "${p.name}${p.tags ? " " + p.tags : ""}" not in ChasePlane`);
 	}
 
@@ -111,6 +113,20 @@ for (const folder of layout.folders) {
 
 	// Flashlight and cinematic keep their own glyph colors (white beam), so they are not tinted.
 	for (const e of folder.extras ?? []) keys[e.pos] = { kind: e.action, icon: e.icon, glow: "#FFFFFF", text: "#FFFFFF", title: "" };
+
+	if (folder.fill === "sequential") {
+		// A2 left to right, row by row, skipping A1 (back) and the extras; ChasePlane's order:
+		// theme by theme as the folder lists them (included views last), then ChasePlane's index.
+		const rank = (v) => (folder.themes.includes(v.profile_theme) ? folder.themes.indexOf(v.profile_theme) : folder.themes.length);
+		const ordered = pool.filter((v) => !used.has(v.guid)).sort((a, b) => rank(a) - rank(b) || a.index - b.index);
+		const slots = [];
+		for (let row = 0; row < 4; row++) for (let col = 0; col < 9; col++) if (!(row === 0 && col === 0) && !keys[`${col},${row}`]) slots.push(`${col},${row}`);
+		for (const v of ordered) {
+			const pos = slots.shift();
+			if (pos) key(pos, v, iconFor(v));
+			else console.log(`  no room: ${folder.name} "${v.name} ${v.tags}"`);
+		}
+	}
 
 	const free = (folder.fillFree ?? []).filter((pos) => !keys[pos]);
 	const unplaced = pool.filter((v) => !used.has(v.guid));

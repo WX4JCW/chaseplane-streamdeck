@@ -189,6 +189,12 @@ Later (owner, 2026-10-17: "touch strip after we get the dynamic pages, dont get 
 
 M6 (optional). In-plugin dynamic page for the "Test Dynamic Folder": theme tabs, paging and view slots filled live from `get_views`, for views not on any generated page and for aircraft without a generated profile.
 
+Layout change (owner, 2026-10-17: "with the exception of the seating that we fill from A2 letf to right"; larger glyphs: "much better - proceed"):
+- Every folder except CABIN fills from A2 left to right, row by row (A1 = back), in ChasePlane's order: theme by theme as the folder lists them, then ChasePlane's `index`. Flashlight D9; cinematic D8 in AIRPORT. CABIN keeps the seat map.
+- Glyphs come from one name → glyph list in `layout.json` (`name|tags` for left/right variants), independent of position.
+- Glyphs fit 78% of the key width and 56% of its height, centred at 39% height, leaving room for a two-line title.
+- Written 2026-10-17: 96 camera keys across the six folders.
+
 ## Colors and glyphs
 
 Owner, 2026-10-17: "i think chaseplanes colors might be easier". Keys use ChasePlane Remote's theme colors (55% lightness for glow and outline, 72% for text); a folder key takes the color of its main theme.
