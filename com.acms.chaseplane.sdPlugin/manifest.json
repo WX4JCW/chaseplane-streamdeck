@@ -4,19 +4,40 @@
 	"Author": "ACMS Digital Systems",
 	"Actions": [
 		{
-			"Name": "Counter",
-			"UUID": "com.acms.chaseplane.increment",
-			"Icon": "imgs/actions/counter/icon",
-			"Tooltip": "Displays a count, which increments by one on press.",
-			"PropertyInspectorPath": "ui/increment-counter.html",
-			"Controllers": [
-				"Keypad"
-			],
+			"Name": "Camera",
+			"UUID": "com.acms.chaseplane.camera",
+			"Icon": "imgs/actions/camera/icon",
+			"Tooltip": "Switches ChasePlane to a saved view. Glows while that view is active.",
+			"PropertyInspectorPath": "ui/camera.html",
+			"Controllers": ["Keypad"],
+			"DisableAutomaticStates": true,
 			"States": [
-				{
-					"Image": "imgs/actions/counter/key",
-					"TitleAlignment": "middle"
-				}
+				{ "Image": "imgs/actions/camera/key", "TitleAlignment": "bottom" },
+				{ "Image": "imgs/actions/camera/key-on", "TitleAlignment": "bottom" }
+			]
+		},
+		{
+			"Name": "Flashlight",
+			"UUID": "com.acms.chaseplane.flashlight",
+			"Icon": "imgs/actions/flashlight/icon",
+			"Tooltip": "Toggles the ChasePlane flashlight. Glows while it is on.",
+			"Controllers": ["Keypad"],
+			"DisableAutomaticStates": true,
+			"States": [
+				{ "Image": "imgs/actions/flashlight/key", "TitleAlignment": "bottom" },
+				{ "Image": "imgs/actions/flashlight/key-on", "TitleAlignment": "bottom" }
+			]
+		},
+		{
+			"Name": "Cinematic",
+			"UUID": "com.acms.chaseplane.cinematic",
+			"Icon": "imgs/actions/cinematic/icon",
+			"Tooltip": "Toggles ChasePlane cinematics. Glows while they are on.",
+			"Controllers": ["Keypad"],
+			"DisableAutomaticStates": true,
+			"States": [
+				{ "Image": "imgs/actions/cinematic/key", "TitleAlignment": "bottom" },
+				{ "Image": "imgs/actions/cinematic/key-on", "TitleAlignment": "bottom" }
 			]
 		}
 	],

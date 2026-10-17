@@ -1,12 +1,14 @@
 import streamDeck from "@elgato/streamdeck";
 
-import { IncrementCounter } from "./actions/increment-counter";
+import { CameraAction } from "./actions/camera";
+import { CinematicAction, FlashlightAction } from "./actions/toggles";
+import { chasePlane } from "./chaseplane/client";
 
-// We can enable "trace" logging so that all messages between the Stream Deck, and the plugin are recorded. When storing sensitive information
-streamDeck.logger.setLevel("trace");
+streamDeck.logger.setLevel("info");
 
-// Register the increment action.
-streamDeck.actions.registerAction(new IncrementCounter());
+streamDeck.actions.registerAction(new CameraAction());
+streamDeck.actions.registerAction(new FlashlightAction());
+streamDeck.actions.registerAction(new CinematicAction());
 
-// Finally, connect to the Stream Deck.
 streamDeck.connect();
+chasePlane.start();
