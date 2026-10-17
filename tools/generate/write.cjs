@@ -65,7 +65,12 @@ function placePinned(keys, dir, onlyIfFree) {
 		}
 		const copy = JSON.parse(JSON.stringify(p.action));
 		copy.ActionID = crypto.randomUUID();
-		if (!DRY) for (const s of copy.States ?? []) if (s.Image) fs.copyFileSync(path.join(p.srcDir, s.Image), path.join(dir, s.Image));
+		if (!DRY)
+			for (const s of copy.States ?? []) {
+				const from = path.join(p.srcDir, s.Image ?? "");
+				const to = path.join(dir, s.Image ?? "");
+				if (s.Image && path.resolve(from) !== path.resolve(to)) fs.copyFileSync(from, to); // source may be this very page
+			}
 		keys[p.pos] = copy;
 	}
 }

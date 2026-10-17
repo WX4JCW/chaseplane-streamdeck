@@ -84,7 +84,13 @@ const norm = (s) => String(s).trim().replace(/\s+/g, " ").toLowerCase();
 const inList = (list, name) => (list ?? []).some((n) => norm(n) === norm(name));
 const icons = new Map(Object.entries(layout.icons ?? {}).map(([k, v]) => [norm(k), v]));
 
-const { metadata, views } = await liveViews();
+let metadata, views;
+try {
+	({ metadata, views } = await liveViews());
+} catch (error) {
+	console.error(`ChasePlane is not reachable on ws://localhost:8652 (${error.code ?? error.message}). Start the sim and ChasePlane, then run again.`);
+	process.exit(2);
+}
 const plan = { aircraft: metadata.aircraft_readable, profile: layout.profile, parentPage: layout.parentPage, folders: [] };
 
 for (const folder of layout.folders) {
@@ -192,3 +198,4 @@ console.log(left.length ? `NOT ON ANY PAGE: ${left.map((v) => `${v.name} ${tags(
 fs.mkdirSync(OUT, { recursive: true });
 fs.writeFileSync(path.join(OUT, "plan.json"), JSON.stringify(plan, null, 1));
 console.log(`aircraft: ${plan.aircraft}; wrote ${path.join(OUT, "plan.json")}`);
+process.exit(0); // exit now: on Windows a closing socket can trip a libuv assertion and a non-zero code

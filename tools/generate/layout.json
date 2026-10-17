@@ -274,9 +274,9 @@
 		}
 	],
 	"pinned": {
-		"comment": "Copied as-is from the owner's Flight Panel pinned page onto every generated folder page and, where free, the parent page (owner: \"i want these pinned like they are as you see\"). Generated content never uses these positions.",
-		"profile": "493D868E-BBB5-4BA8-ADEF-17D95E4E95D6",
-		"page": "742AC2A2-6691-403E-ABFB-3CC9436F9577",
+		"comment": "The four camera/screenshot keys in column 9 of SimDeck main page (originally copied from the removed Flight Panel profile) are copied as-is onto every generated folder page. Generated content never uses these positions.",
+		"profile": "227856A2-5D79-4BA9-A9DA-769A3F195C15",
+		"page": "A0D29719-64E3-4B2E-8A44-C77CB9CD9CAE",
 		"keys": [
 			"8,0",
 			"8,1",
