@@ -108,6 +108,20 @@ for (const folder of plan.folders) {
 	state.folders[folder.name] = pageId;
 }
 
+// Folders not built here (live TRAFFIC page): restyle only their folder key; the page is not touched.
+for (const k of plan.keyOnly ?? []) {
+	const pos = Object.entries(parentKeys).find(([, a]) => a.Settings?.ProfileUUID?.toUpperCase() === k.page.toUpperCase())?.[0];
+	if (!pos) {
+		console.log(`skip ${k.name}: no folder key for page ${k.page} on the parent page`);
+		continue;
+	}
+	const image = `Images/GEN_${k.name.replace(/[^A-Za-z0-9]/g, "_")}_folder.png`;
+	console.log(`${DRY ? "would restyle" : "restyle"} ${k.name} folder key at ${pos} (page untouched)`);
+	if (DRY) continue;
+	fs.copyFileSync(path.join(OUT, "img", k.name, "folder.png"), path.join(PAGES, plan.parentPage, image));
+	parentKeys[pos].States[0] = { ...parentKeys[pos].States[0], ...titled(image, k.name, k.text) };
+}
+
 if (!DRY) {
 	fs.writeFileSync(parentFile, JSON.stringify(parent));
 	fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 1));

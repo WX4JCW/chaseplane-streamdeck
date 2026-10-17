@@ -1,7 +1,7 @@
 {
 	"profile": "227856A2-5D79-4BA9-A9DA-769A3F195C15",
 	"parentPage": "A0D29719-64E3-4B2E-8A44-C77CB9CD9CAE",
-	"comment": "Positions are col,row on the 9x4 + XL keypad (A1 = 0,0, the back key). 'fill: sequential' places a folder's views from A2 left to right, row by row, in ChasePlane's order (theme by theme as listed, then ChasePlane's index). A view without a glyph is drawn by the plugin.",
+	"comment": "Positions are col,row on the 9x4 + XL keypad (A1 = 0,0, the back key). 'fill: sequential' places a folder's views from A2 left to right, row by row, in ChasePlane's order (theme by theme as listed, then ChasePlane's index). A view without a glyph is drawn by the plugin. Folder keys are drawn uniformly (tools/generate/folder_key.py): folder outline in the theme color with folderIcon inside.",
 	"icons": {
 		"Pilot": "Pilot_1",
 		"Pilot 2": "Pilot_1",
@@ -63,79 +63,199 @@
 		{
 			"name": "COCKPIT",
 			"parentKey": "0,0",
-			"themes": ["ONBOARD_PIC", "ONBOARD_MOUNTED"],
+			"themes": [
+				"ONBOARD_PIC",
+				"ONBOARD_MOUNTED"
+			],
 			"colorTheme": "ONBOARD_PIC",
-			"folderIcon": "Folder_Cockpit_Controls",
+			"folderIcon": "Pilot_1",
 			"fill": "sequential",
-			"extras": [{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }]
+			"extras": [
+				{
+					"action": "flashlight",
+					"pos": "8,3",
+					"icon": "Flashlight_Beam"
+				}
+			]
 		},
 		{
 			"name": "SYSTEMS",
 			"parentKey": "1,0",
-			"themes": ["ONBOARD_SYSTEMS"],
+			"themes": [
+				"ONBOARD_SYSTEMS"
+			],
 			"colorTheme": "ONBOARD_SYSTEMS",
 			"folderIcon": "737_Overhead",
 			"fill": "sequential",
-			"extras": [{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }]
+			"extras": [
+				{
+					"action": "flashlight",
+					"pos": "8,3",
+					"icon": "Flashlight_Beam"
+				}
+			]
 		},
 		{
 			"name": "CABIN",
 			"parentKey": "8,1",
-			"themes": ["ONBOARD_CABIN"],
+			"themes": [
+				"ONBOARD_CABIN"
+			],
 			"colorTheme": "ONBOARD_CABIN",
-			"folderIcon": "Folder_Cabin_Interior",
+			"folderIcon": "Seat_Purple",
 			"comment": "The one hand-laid page: seat map, A over F, front to back.",
 			"place": [
-				{ "name": "Cabin", "pos": "1,0", "icon": "Galley" },
-				{ "name": "Cabin Fwd", "pos": "2,0", "icon": "Galley" },
-				{ "name": "Cabin Mid", "pos": "3,0", "icon": "Galley" },
-				{ "name": "Cabin Aft", "pos": "4,0", "icon": "Galley" },
-				{ "name": "FWD PSU 1", "pos": "5,0", "icon": "Galley" },
-				{ "name": "FWD PSU 2", "pos": "6,0", "icon": "Galley" },
-				{ "name": "Lavatories", "tags": "L FWD", "pos": "0,3", "icon": "Toilet_Purple" },
-				{ "name": "Lavatories", "tags": "R AFT", "pos": "1,3", "icon": "Toilet_Purple" }
+				{
+					"name": "Cabin",
+					"pos": "1,0",
+					"icon": "Galley"
+				},
+				{
+					"name": "Cabin Fwd",
+					"pos": "2,0",
+					"icon": "Galley"
+				},
+				{
+					"name": "Cabin Mid",
+					"pos": "3,0",
+					"icon": "Galley"
+				},
+				{
+					"name": "Cabin Aft",
+					"pos": "4,0",
+					"icon": "Galley"
+				},
+				{
+					"name": "FWD PSU 1",
+					"pos": "5,0",
+					"icon": "Galley"
+				},
+				{
+					"name": "FWD PSU 2",
+					"pos": "6,0",
+					"icon": "Galley"
+				},
+				{
+					"name": "Lavatories",
+					"tags": "L FWD",
+					"pos": "0,3",
+					"icon": "Toilet_Purple"
+				},
+				{
+					"name": "Lavatories",
+					"tags": "R AFT",
+					"pos": "1,3",
+					"icon": "Toilet_Purple"
+				}
 			],
 			"seatMap": {
 				"pattern": "^(\\d+)([A-Z])$",
-				"letterRow": { "A": 1, "F": 2 },
+				"letterRow": {
+					"A": 1,
+					"F": 2
+				},
 				"firstColumn": 0,
 				"icon": "Seat_Purple",
-				"exitRows": { "14": "ESeat_Purple" }
+				"exitRows": {
+					"14": "ESeat_Purple"
+				}
 			},
-			"extras": [{ "action": "flashlight", "pos": "7,3", "icon": "Flashlight_Beam" }],
-			"fillFree": ["2,3", "3,3", "4,3", "5,3", "6,3", "8,0", "8,1", "8,2", "8,3"]
+			"extras": [
+				{
+					"action": "flashlight",
+					"pos": "7,3",
+					"icon": "Flashlight_Beam"
+				}
+			],
+			"fillFree": [
+				"2,3",
+				"3,3",
+				"4,3",
+				"5,3",
+				"6,3",
+				"8,0",
+				"8,1",
+				"8,2",
+				"8,3"
+			]
 		},
 		{
 			"name": "EXTERIOR",
 			"parentKey": "2,0",
-			"themes": ["OUTSIDE_AIRFRAME", "OUTSIDE_CHASE"],
+			"themes": [
+				"OUTSIDE_AIRFRAME",
+				"OUTSIDE_CHASE"
+			],
 			"colorTheme": "OUTSIDE_AIRFRAME",
-			"folderIcon": "Folder_Aircraft_Exterior",
+			"folderIcon": "Orbit2",
 			"fill": "sequential",
-			"extras": [{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }]
+			"extras": [
+				{
+					"action": "flashlight",
+					"pos": "8,3",
+					"icon": "Flashlight_Beam"
+				}
+			]
 		},
 		{
 			"name": "GROUND SVC",
 			"parentKey": "3,0",
-			"themes": ["OUTSIDE_MISC"],
-			"exclude": ["Terminal"],
+			"themes": [
+				"OUTSIDE_MISC"
+			],
+			"exclude": [
+				"Terminal"
+			],
 			"colorTheme": "OUTSIDE_MISC",
 			"folderIcon": "Fueling_Orange",
 			"fill": "sequential",
-			"extras": [{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }]
+			"extras": [
+				{
+					"action": "flashlight",
+					"pos": "8,3",
+					"icon": "Flashlight_Beam"
+				}
+			]
 		},
 		{
 			"name": "AIRPORT",
 			"parentKey": "4,0",
-			"themes": ["OUTSIDE_ORBIT", "WORLD_DEFAULT", "WORLD_TOWER", "WORLD_RUNWAY", "WORLD_PARKING", "WORLD_SPOTTING", "WORLD_TRAFFIC"],
-			"include": ["Terminal"],
+			"themes": [
+				"OUTSIDE_ORBIT",
+				"WORLD_DEFAULT",
+				"WORLD_TOWER",
+				"WORLD_RUNWAY",
+				"WORLD_PARKING",
+				"WORLD_SPOTTING",
+				"WORLD_TRAFFIC"
+			],
+			"include": [
+				"Terminal"
+			],
 			"colorTheme": "OUTSIDE_ORBIT",
-			"folderIcon": "Folder_Airport_Walkaround",
+			"folderIcon": "Tower2",
 			"fill": "sequential",
 			"extras": [
-				{ "action": "cinematic", "pos": "7,3", "icon": "Cinematic_Camera" },
-				{ "action": "flashlight", "pos": "8,3", "icon": "Flashlight_Beam" }
+				{
+					"action": "cinematic",
+					"pos": "7,3",
+					"icon": "Cinematic_Camera"
+				},
+				{
+					"action": "flashlight",
+					"pos": "8,3",
+					"icon": "Flashlight_Beam"
+				}
 			]
+		}
+	],
+	"keyOnly": [
+		{
+			"name": "TRAFFIC",
+			"page": "FE5831E1-5723-4DA0-8CBB-DFA035454D37",
+			"color": "#EA2C27",
+			"folderIcon": "Traffic_Red",
+			"comment": "Existing live traffic folder: only its folder key is restyled; the page is not touched. Red of the owner's Traffic_Red icon (owner: make traffic red please)."
 		}
 	]
 }

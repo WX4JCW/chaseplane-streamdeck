@@ -147,6 +147,14 @@ for (const folder of layout.folders) {
 	console.log(`${folder.name}: ${pool.length} views; placed ${cams.length} (${cams.filter((k) => k.draw).length} drawn); filled into free slots ${unplaced.length}`);
 }
 
+// Folders the generator does not build (e.g. the live TRAFFIC page): only their folder key is restyled.
+plan.keyOnly = (layout.keyOnly ?? []).map((k) => ({
+	name: k.name,
+	page: k.page,
+	folderIcon: k.folderIcon,
+	...(k.color ? { glow: k.color, text: k.color } : themeColors(k.colorTheme)),
+}));
+
 const placed = new Set(plan.folders.flatMap((f) => Object.values(f.keys).map((k) => k.guid)));
 const left = views.filter((v) => !placed.has(v.guid));
 console.log(left.length ? `NOT ON ANY PAGE: ${left.map((v) => `${v.name} ${tags(v)} [${v.profile_theme}]`).join(", ")}` : `all ${views.length} views placed`);

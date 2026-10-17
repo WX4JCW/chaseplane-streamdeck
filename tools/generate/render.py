@@ -11,6 +11,8 @@ import os
 import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
+from folder_key import folder_key
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
 WORK = "D:/Bundled Images/StreamDeck Icons/Working Icons"
@@ -127,9 +129,21 @@ def render_folder(folder):
         off.save(os.path.join(d, f"{name}_off.png"))
         on.save(os.path.join(d, f"{name}_on.png"))
         k["images"] = [f"{name}_off.png", f"{name}_on.png"]
-    off_src, _, _ = load_glyph(folder["folderIcon"])
-    (layer,) = place(to_layer(off_src, folder["text"]), to_layer(off_src, folder["text"]))[:1]
-    plain(layer).convert("RGB").save(os.path.join(d, "folder.png"))
+    draw_folder_key(folder, d)
+
+
+def draw_folder_key(folder, d):
+    """Every folder key is drawn the same way: folder outline in the theme color, glyph inside."""
+    os.makedirs(d, exist_ok=True)
+    src, _, _ = load_glyph(folder["folderIcon"])
+    glyph = to_layer(src, folder["text"])
+    glyph = glyph.crop(glyph.getchannel("A").point(lambda v: 255 if v > 12 else 0).getbbox())
+
+    def fit_glyph(w, h):
+        s = min(w / glyph.width, h / glyph.height)
+        return glyph.resize((max(1, round(glyph.width * s)), max(1, round(glyph.height * s))), Image.LANCZOS)
+
+    folder_key(fit_glyph, rgb(folder["text"]), SIZE).convert("RGB").save(os.path.join(d, "folder.png"))
     folder["folderImage"] = "folder.png"
 
 
@@ -169,4 +183,7 @@ for f in plan["folders"]:
     render_folder(f)
     preview(f)
     print(f"{f['name']}: {sum(1 for k in f['keys'].values() if 'images' in k)} keys rendered, preview_{f['name']}.png")
+for k in plan.get("keyOnly", []):
+    draw_folder_key(k, os.path.join(OUT, "img", k["name"]))
+    print(f"{k['name']}: folder key only")
 json.dump(plan, open(os.path.join(OUT, "plan.json"), "w", encoding="utf-8"), indent=1)
