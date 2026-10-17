@@ -119,3 +119,95 @@ Build: a script that, per mapped button, swaps the action UUID and plugin block 
 
 Action block shape: as written in step 5 (verified working).
 Carry over `Settings.name` and `Settings.mode` from the stalexcorp settings (every camera button has them; the 4 flashlight and 1 cinematic buttons have no settings) so world views resolve by name. Check every GUID against `get_views` before writing; report any that are not listed.
+
+# Phase 2: generated camera pages
+
+Goal: an offline generator that builds organized ChasePlane camera pages for any aircraft
+from ChasePlane's own view data, laid out with flow logic (like the CABIN seat map), and
+updates them in place when rerun. For the owner's deck only (CLAUDE.md).
+
+Owner constraints (2026-10-17):
+- "i dont want the files touched yet": ChasePlane's files are read only. The generator never writes under `p42-util-chaseplane`.
+- "an external generator script to run offline and update the profiles".
+
+## What is verified
+
+| Fact | Evidence |
+|---|---|
+| ChasePlane stores one JSON per saved view, per aircraft: `%APPDATA%\Microsoft Flight Simulator 2024\WASM\MSFS2024\p42-util-chaseplane\work\aircraft\<aircraft>\onboard\<guid>.json` and `...\outside\` | iFly folder: 64 onboard + 24 outside files; Pilot file identical to its `get_views` record |
+| Aircraft folders present: ifly 737_max8, ifly 737_max8_166seats, pmdg 737_800 bw hd, fnx_321_iae_sl_tc, fnx_321_iae_wf_tc, fslabs a321_neo leap, e175 | directory listing |
+| `metadata.txt` per aircraft: aircraft.cfg path, ..., onboard and outside counts (64, 24) | file contents |
+| The 8 World views are not stored on disk; their GUIDs change | not in the folders; earlier GUID test |
+| Every view has `profile_theme`: ONBOARD_PIC, ONBOARD_SYSTEMS, ONBOARD_MOUNTED, ONBOARD_CABIN, OUTSIDE_ORBIT, OUTSIDE_MISC, OUTSIDE_AIRFRAME, OUTSIDE_CHASE, WORLD_DEFAULT/TOWER/RUNWAY/PARKING/SPOTTING/TRAFFIC | `get_views`, iFly: 9/26/5/24/3/7/11/3/3+5 |
+| ChasePlane Remote names and colors each theme (hue, saturation; lightness 55% bar, 72% text) | `remote-ui.js` theme table, `remote-ui.css` |
+| Views carry `index` (ChasePlane order) and LEFT/RIGHT/FWD/MID/AFT suffix flags | `get_views` |
+| The API cannot rename or edit views; only `reorder_views` changes them | full command list from `remote-ui.js` |
+| Folder pages are page directories referenced by a folder key (`com.elgato.streamdeck.profile.openchild`, `Settings.ProfileUUID`) and are not listed in the profile's `Pages` | Flight Panel and ChasePlaneTest manifests |
+| Writing camera keys, images and keys into existing folder pages works | steps 5, glow swap, TRAFFIC |
+| Camera buttons with only name and mode (no GUID) resolve by name | `resolveView` fallback; Tower/Traffic fix |
+| Drawn SVG keys via `setImage` render on this Stream Deck | TRAFFIC slots |
+| A `.streamDeckProfile` is a zip of `package.json` (AppVersion, DeviceModel, FormatVersion 1, OSType, RequiredPlugins) plus `Profiles/<id>.sdProfile/` | existing PMDG profile file |
+
+## Folder mapping (from themes)
+
+| Folder | Themes |
+|---|---|
+| COCKPIT | ONBOARD_PIC, ONBOARD_SYSTEMS, ONBOARD_MOUNTED |
+| CABIN | ONBOARD_CABIN |
+| EXTERIOR | OUTSIDE_AIRFRAME, OUTSIDE_CHASE |
+| GROUND SVC | OUTSIDE_MISC (Terminal goes to AIRPORT) |
+| ORBIT/AIRPORT | OUTSIDE_ORBIT, all WORLD_* |
+| TRAFFIC | live traffic page (built) |
+| OTHER | any view no rule places |
+
+Flow layouts per folder (layout file, hand placements by view name, rules for the rest):
+- CABIN: zones across row 1; A seats over F seats, front to back; lavatories and flashlight on row 4 (the owner's existing layout).
+- COCKPIT: captain side left, center, first officer right; rows overhead → eye level → panel → pedestal.
+- EXTERIOR: aircraft seen from above, nose at top centre, left-wing views on the left half, right on the right, chase at bottom centre.
+- GROUND SVC: front to back along the fuselage; left-side services over right-side.
+- ORBIT/AIRPORT: near to far: around the aircraft, at the airport, in the world, watching others.
+
+## Milestones
+
+M1. Layout file and reader (`tools/generate/`). Reads the aircraft folders read only, applies the mapping and placements, reports placed / unplaced / stale per aircraft, and draws a preview image per folder. Writes nothing.
+
+M2. One new folder. Writes CABIN for the iFly as a new folder key and folder page in ChasePlaneTest (Stream Deck closed, backup first). Owner opens it.
+Proves the one unverified write: creating a folder page that did not exist.
+
+M3. Drawn camera keys. Camera action draws a text key in the folder color when a button has no image, so views without a glow icon need no new art. Uses the proven SVG path.
+
+M4. Full folder set for the iFly in ChasePlaneTest: all folders, flow layouts, OTHER, TRAFFIC link.
+
+M5. One generated profile per aircraft, updated in place on rerun (the generator records each profile's ID). Stream Deck closed for writes.
+Unverified: creating a new profile directory from scratch (root manifest with Device, Name, Pages, Version). Check: generate one, start Stream Deck, confirm it lists and opens.
+
+M6 (optional). In-plugin dynamic page for the "Test Dynamic Folder": theme tabs, paging and view slots filled live from `get_views`, for views not on any generated page and for aircraft without a generated profile.
+
+## Colors and glyphs
+
+Owner, 2026-10-17: "i think chaseplanes colors might be easier". Keys use ChasePlane Remote's theme colors (55% lightness for glow and outline, 72% for text); a folder key takes the color of its main theme.
+
+Glyph tinting at generate time (chosen):
+- The generator keys out each glyph's black (as `tools/glow/glow_icons.py` does), paints the glyph in its view's theme color, and bakes the off/glow pair into the profile. The 34 glyphs in Working Icons become shapes recolored per theme; no new art.
+- A view moved to another theme in ChasePlane is repainted on the next run.
+- Uses only proven steps: Python image work and writing images into profiles.
+
+Live tinting in the plugin (only if M6 needs it, unverified):
+- SVG with an embedded glyph image tinted by mask or filter: needs Stream Deck's SVG renderer to support `<image>` plus masks or filters; only text and shapes are proven.
+- Or tint the PNG in the plugin with a small image library (new dependency).
+Check before use: one test key per method.
+
+## View titles
+
+Owner, 2026-10-17: "we will need a text title for each view like the existing original plugin does, but i want the text color to match".
+- The generator writes each camera key's title (view name, suffix tags shortened: "EFB L", "Lavatories L FWD") and `TitleColor` = the theme's text color (72% lightness), plus `FontSize`, `FontFamily`, `TitleAlignment: bottom`. These state fields exist in profiles Stream Deck wrote (Flight Panel buttons carry them).
+- The plugin calls `setTitle` with the current view name, so renames made in ChasePlane show without regenerating (as the stalexcorp plugin does). `setTitle` carries text only (SDK `SetTitle` payload: title, state, target), so the color stays the key's `TitleColor`.
+- Glyph layout leaves room for the title: glyph moved up and slightly smaller; glow outline kept clear of the text.
+Unverified: that a plugin `setTitle` keeps the key's `TitleColor`. Check: one test key with a colored title, then a rename in ChasePlane.
+
+Possible adjustment: Systems (grey-green) and Misc (brown-grey) are muted; if they read too dim on the hardware, raise their saturation slightly, same hue.
+
+## Same-name views
+
+Verified (iFly view files, owner: "chaseplan dynamically names the potision"): saved files hold only the base name ("Throttle"), with no suffix fields. ChasePlane adds LEFT/RIGHT/FWD/MID/AFT from the camera position when it serves `get_views` (Throttle `102614ba` x 0.4998 right of the 0.491 seat anchor → RIGHT; `9070f790` and `afa899b0` x 0.4898 → LEFT, same spot, different pitch and zoom).
+Same-name views are distinct cameras with their own GUIDs and are placed by GUID; their titles may repeat ("Throttle L"). Nothing to resolve. When reading the files offline, the generator takes the suffix from `get_views` when ChasePlane is running, else shows the base name.
