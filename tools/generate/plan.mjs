@@ -79,12 +79,17 @@ async function liveViews() {
 	});
 }
 
+/** Layout names match ChasePlane's names ignoring case and extra spaces, so a rename in capitals keeps its rules. */
+const norm = (s) => String(s).trim().replace(/\s+/g, " ").toLowerCase();
+const inList = (list, name) => (list ?? []).some((n) => norm(n) === norm(name));
+const icons = new Map(Object.entries(layout.icons ?? {}).map(([k, v]) => [norm(k), v]));
+
 const { metadata, views } = await liveViews();
 const plan = { aircraft: metadata.aircraft_readable, profile: layout.profile, parentPage: layout.parentPage, folders: [] };
 
 for (const folder of layout.folders) {
 	const pool = views
-		.filter((v) => (folder.themes.includes(v.profile_theme) && !(folder.exclude ?? []).includes(v.name)) || (folder.include ?? []).includes(v.name))
+		.filter((v) => (folder.themes.includes(v.profile_theme) && !inList(folder.exclude, v.name)) || inList(folder.include, v.name))
 		.map((v) => ({ ...v, tags: tags(v) }));
 	const used = new Set();
 	const keys = {};
@@ -96,10 +101,10 @@ for (const folder of layout.folders) {
 		used.add(v.guid);
 	};
 
-	const iconFor = (v) => layout.icons?.[`${v.name}|${v.tags}`] ?? layout.icons?.[v.name] ?? null;
+	const iconFor = (v) => icons.get(norm(`${v.name}|${v.tags}`)) ?? icons.get(norm(v.name)) ?? null;
 
 	for (const p of folder.place ?? []) {
-		const v = pool.find((x) => !used.has(x.guid) && x.name === p.name && (p.tags === undefined || x.tags === p.tags));
+		const v = pool.find((x) => !used.has(x.guid) && norm(x.name) === norm(p.name) && (p.tags === undefined || x.tags === p.tags));
 		if (v) key(p.pos, v, p.icon ?? iconFor(v));
 		else console.log(`  stale: ${folder.name} "${p.name}${p.tags ? " " + p.tags : ""}" not in ChasePlane`);
 	}
