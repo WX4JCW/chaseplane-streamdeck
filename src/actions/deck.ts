@@ -2,9 +2,10 @@ import streamDeck, { action, KeyAction, KeyDownEvent, SingletonAction } from "@e
 import type { JsonObject } from "@elgato/utils";
 import { EventEmitter } from "node:events";
 
-import { chasePlane, type View } from "../chaseplane/client";
+import { chasePlane, type TrafficAircraft, type View } from "../chaseplane/client";
 import { AREAS, type Group, groupLibrary } from "../chaseplane/groups";
 import { keyImage, keyStyle, viewLook } from "./key-style";
+import { slotLines } from "./traffic-key";
 import { plainName } from "./view-key";
 
 /**
@@ -34,7 +35,12 @@ type Role =
 	| { kind: "group"; group: Group; count: number }
 	| { kind: "home" }
 	| { kind: "view"; view: View }
+	| { kind: "aircraft"; aircraft: TrafficAircraft }
 	| { kind: "page"; step: -1 | 1; label: string };
+
+const TRAFFIC_THEME = "WORLD_TRAFFIC";
+/** Whether the deck has a traffic group open, so the live aircraft list is needed. */
+const trafficOpen = (): boolean => screen.kind === "group" && groupLibrary.byGuid(screen.guid)?.theme === TRAFFIC_THEME;
 
 export const viewsOf = (guid: string): View[] =>
 	chasePlane.views.filter((v) => v.profile_preset === guid).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
@@ -120,15 +126,19 @@ function roles(keys: Array<{ id: string; pos: Pos }>): Map<string, Role> {
 		screen.page = 0;
 		return out;
 	}
+	// A traffic group (ChasePlane's World Traffic camera) lists the live AI aircraft after its views,
+	// the same list the Traffic dial steps through (owner, 2026-10-31: the dial populated, the page did not).
+	const items: Role[] = views.map((v): Role => ({ kind: "view", view: v }));
+	if (groupLibrary.byGuid(screen.guid)?.theme === TRAFFIC_THEME) for (const a of chasePlane.traffic) items.push({ kind: "aircraft", aircraft: a });
 	let size = slots.length;
-	if (views.length > slots.length && slots.length > 2) {
+	if (items.length > slots.length && slots.length > 2) {
 		size = slots.length - 2;
-		const pages = Math.ceil(views.length / size);
+		const pages = Math.ceil(items.length / size);
 		screen.page = Math.min(Math.max(0, screen.page), pages - 1);
 		out.set(slots[size].id, { kind: "page", step: -1, label: `◀ ${screen.page + 1}/${pages}` });
 		out.set(slots[size + 1].id, { kind: "page", step: 1, label: `${screen.page + 1}/${pages} ▶` });
 	} else screen.page = 0;
-	views.slice(screen.page * size, screen.page * size + size).forEach((v, i) => out.set(slots[i].id, { kind: "view", view: v }));
+	items.slice(screen.page * size, screen.page * size + size).forEach((role, i) => out.set(slots[i].id, role));
 	return out;
 }
 
@@ -140,9 +150,20 @@ export class DeckAction extends SingletonAction {
 	constructor() {
 		super();
 		for (const event of ["views", "camera", "connection"]) chasePlane.on(event, () => this.renderAll());
+		// The aircraft list only matters while a traffic group is open.
+		chasePlane.on("traffic", () => trafficOpen() && this.renderAll());
+		chasePlane.on("connection", () => this.watchTrafficIfOpen());
 		groupLibrary.on("groups", () => this.renderAll());
 		keyStyle.on("style", () => this.renderAll());
-		deckScreen.on("screen", () => this.renderAll());
+		deckScreen.on("screen", () => {
+			this.watchTrafficIfOpen();
+			this.renderAll();
+		});
+	}
+
+	/** Asks ChasePlane for the live AI list while a traffic group is open (the Traffic dial may already have). */
+	private watchTrafficIfOpen(): void {
+		if (trafficOpen() && chasePlane.ready) void chasePlane.watchTraffic(true).catch((e) => streamDeck.logger.warn(`traffic watch failed: ${e.message}`));
 	}
 
 	override onWillAppear(): void {
@@ -171,6 +192,14 @@ export class DeckAction extends SingletonAction {
 					await chasePlane.setView(role.view.guid);
 				} catch (error) {
 					streamDeck.logger.error(`deck view ${role.view.guid} failed: ${(error as Error).message}`);
+					await ev.action.showAlert();
+				}
+				return;
+			case "aircraft":
+				try {
+					await chasePlane.viewTraffic(role.aircraft.uId);
+				} catch (error) {
+					streamDeck.logger.error(`deck traffic ${role.aircraft.uId} failed: ${(error as Error).message}`);
 					await ev.action.showAlert();
 				}
 				return;
@@ -210,6 +239,11 @@ export class DeckAction extends SingletonAction {
 				case "view":
 					image = keyImage(viewLook(role.view, role.view.guid === chasePlane.activeGuid));
 					break;
+				case "aircraft": {
+					const [identity, type, phase] = slotLines(role.aircraft);
+					image = keyImage({ theme: TRAFFIC_THEME, caption: phase || "Traffic", name: identity, sub: type, active: chasePlane.trackingId === role.aircraft.uId });
+					break;
+				}
 				default:
 					image = BLANK;
 			}
