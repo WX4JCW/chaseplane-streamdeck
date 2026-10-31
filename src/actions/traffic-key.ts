@@ -8,12 +8,14 @@ export const FONT = { family: "Arial, Helvetica, sans-serif", weight: "bold", si
  * which is the radio callsign: Atlas Air is "Giant", China Airlines is "Dynasty".
  */
 const AIRLINE_COLORS: Record<string, string> = {
-	American: "#9FC3E7",
+	// Silver-steel (its polished livery): light blue read the same as United's blue on the deck (owner, 2026-10-31).
+	American: "#9AA8B8",
 	Delta: "#EF5B67",
-	United: "#4A8BE8",
+	// The blue airlines are kept at least ~15-30 degrees of hue apart so they read apart on the deck.
+	United: "#4A5FE0",
 	Southwest: "#FFBF27",
 	Alaska: "#3BB2A6",
-	JetBlue: "#2E8BFF",
+	JetBlue: "#2AA9F0",
 	"Spirit Wings": "#F7E400",
 	"Frontier Flight": "#3CB371",
 	FedEx: "#A776F0",
@@ -21,7 +23,8 @@ const AIRLINE_COLORS: Record<string, string> = {
 	Giant: "#3FC1D6",
 	Cargolux: "#F28C28",
 	Dynasty: "#E7A3CC",
-	Envoy: "#7FA7D9",
+	// Envoy flies as American Eagle, so it shares American's silver.
+	Envoy: "#9AA8B8",
 	SkyWest: "#8FB8DE",
 	Brickyard: "#B0BEC5",
 	Speedbird: "#E8505B",
