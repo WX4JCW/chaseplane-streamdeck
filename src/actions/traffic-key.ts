@@ -25,7 +25,8 @@ const AIRLINE_COLORS: Record<string, string> = {
 	Dynasty: "#E7A3CC",
 	// Envoy flies as American Eagle, so it shares American's silver.
 	Envoy: "#9AA8B8",
-	SkyWest: "#8FB8DE",
+	// Rose: its light blue was close to JetBlue's sky blue.
+	SkyWest: "#E07FB0",
 	Brickyard: "#B0BEC5",
 	Speedbird: "#E8505B",
 	Lufthansa: "#FFC94A",
@@ -33,14 +34,16 @@ const AIRLINE_COLORS: Record<string, string> = {
 	Qatari: "#B5537A",
 };
 const NO_AIRLINE = "#FFFFFF";
+/** Matched ignoring capitals: ChasePlane reports "Skywest" where the table says "SkyWest" (2026-10-31). */
+const BY_NAME = new Map(Object.entries(AIRLINE_COLORS).map(([name, color]) => [name.toLowerCase(), color]));
 
 /** Known airline color, else a steady color derived from the name, else white for GA. */
 export function airlineColor(airline?: string): string {
 	if (!airline) return NO_AIRLINE;
-	const known = AIRLINE_COLORS[airline];
+	const known = BY_NAME.get(airline.toLowerCase());
 	if (known) return known;
 	let hash = 0;
-	for (const ch of airline) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+	for (const ch of airline.toLowerCase()) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
 	return `hsl(${hash % 360}, 65%, 64%)`;
 }
 
