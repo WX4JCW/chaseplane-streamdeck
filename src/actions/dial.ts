@@ -5,7 +5,7 @@ import { chasePlane } from "../chaseplane/client";
 import { groupLibrary } from "../chaseplane/groups";
 import { activeGroupGuid, deckScreen, openGroup, openGroupGuid, viewsOf, visibleGroups } from "./deck";
 import { keyStyle, stripImage, type StripLook } from "./key-style";
-import { slotLines } from "./traffic-key";
+import { airlineColor, slotLines } from "./traffic-key";
 import { plainName } from "./view-key";
 
 /**
@@ -176,7 +176,7 @@ export class DeckDialAction extends SingletonAction {
 				const a = list[at];
 				if (!a) return { theme: "WORLD_TRAFFIC", caption: "Traffic", value: list.length ? "My aircraft" : "None", sub: list.length ? `${list.length} nearby` : "" };
 				const [identity, type, phase] = slotLines(a);
-				return { theme: "WORLD_TRAFFIC", caption: `Traffic ${at + 1}/${list.length}`, value: identity, sub: [type, phase].filter(Boolean).join(" · "), active: true };
+				return { color: airlineColor(a.atc_airline), caption: `Traffic ${at + 1}/${list.length}`, value: identity, sub: [type, phase].filter(Boolean).join(" · "), active: true };
 			}
 			default:
 				return { caption: "Dial", value: "—" };

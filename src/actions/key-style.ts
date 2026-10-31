@@ -2,7 +2,7 @@ import { EventEmitter } from "node:events";
 
 import type { View } from "../chaseplane/client";
 import { groupLibrary } from "../chaseplane/groups";
-import { panelColors, themeColors, viewTags } from "../chaseplane/themes";
+import { panelColors, panelColorsFor, themeColors, viewTags } from "../chaseplane/themes";
 import { escape, fit, FONT } from "./traffic-key";
 import { nameLines, plainName } from "./view-key";
 
@@ -16,6 +16,8 @@ import { nameLines, plainName } from "./view-key";
 export type KeyLook = {
 	/** ChasePlane theme; none gives the neutral grey key. */
 	theme?: string;
+	/** A color instead of a theme ("#9FC3E7" or "hsl(...)"), such as an airline's on traffic keys. */
+	color?: string;
 	/** Small text at the top (group, area, or what the key is). */
 	caption?: string;
 	/** Main text; a "|" breaks the line there. */
@@ -111,7 +113,7 @@ function ink(background: string): string {
 }
 
 function styleB(look: KeyLook): string {
-	const c = panelColors(look.theme);
+	const c = look.color ? panelColorsFor(look.color) : panelColors(look.theme);
 	const on = look.accent ?? c.on;
 	const band = 30;
 	return (
@@ -127,10 +129,10 @@ function styleB(look: KeyLook): string {
 }
 
 /** One dial's section of the touch strip (200 x 100), in the Panel style: caption band, value, status line. */
-export type StripLook = { theme?: string; caption: string; value: string; sub?: string; active?: boolean; accent?: string };
+export type StripLook = { theme?: string; color?: string; caption: string; value: string; sub?: string; active?: boolean; accent?: string };
 
 export function stripImage(look: StripLook): string {
-	const c = panelColors(look.theme);
+	const c = look.color ? panelColorsFor(look.color) : panelColors(look.theme);
 	const on = look.accent ?? c.on;
 	const band = 24;
 	const line = (y: number, base: number, raw: string, fill: string, width: number) => {

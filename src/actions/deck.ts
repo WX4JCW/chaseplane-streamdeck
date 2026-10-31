@@ -5,7 +5,7 @@ import { EventEmitter } from "node:events";
 import { chasePlane, type TrafficAircraft, type View } from "../chaseplane/client";
 import { AREAS, type Group, groupLibrary } from "../chaseplane/groups";
 import { keyImage, keyStyle, viewLook } from "./key-style";
-import { slotLines } from "./traffic-key";
+import { airlineColor, slotLines } from "./traffic-key";
 import { plainName } from "./view-key";
 
 /**
@@ -241,7 +241,8 @@ export class DeckAction extends SingletonAction {
 					break;
 				case "aircraft": {
 					const [identity, type, phase] = slotLines(role.aircraft);
-					image = keyImage({ theme: TRAFFIC_THEME, caption: phase || "Traffic", name: identity, sub: type, active: chasePlane.trackingId === role.aircraft.uId });
+					// Colored by airline (traffic-key's airline table; GA white), so each carrier is easy to spot.
+					image = keyImage({ color: airlineColor(role.aircraft.atc_airline), caption: phase || "Traffic", name: identity, sub: type, active: chasePlane.trackingId === role.aircraft.uId });
 					break;
 				}
 				default:

@@ -47,6 +47,33 @@ export function panelColors(theme?: string): { deep: string; band: string; text:
 	return { deep: hsl(h, s * 0.8, 11), band: hsl(h, s, 52), text: hsl(h, s, 78), on: hsl(h, s, 60) };
 }
 
+/**
+ * Panel colors from any color ("#9FC3E7" or "hsl(210, 65%, 64%)"), with the same recipe as the themes:
+ * used for airline colors on traffic keys. White or grey (no hue) gives the neutral key.
+ */
+export function panelColorsFor(color: string): { deep: string; band: string; text: string; on: string } {
+	let h = 0;
+	let s = 0;
+	const hslMatch = /hsl\(\s*([\d.]+)\s*,\s*([\d.]+)%/i.exec(color);
+	if (hslMatch) {
+		h = Number(hslMatch[1]);
+		s = Number(hslMatch[2]);
+	} else if (/^#[0-9a-f]{6}$/i.test(color)) {
+		const [r, g, b] = [1, 3, 5].map((i) => parseInt(color.slice(i, i + 2), 16) / 255);
+		const max = Math.max(r, g, b);
+		const min = Math.min(r, g, b);
+		const l = (max + min) / 2;
+		const d = max - min;
+		if (d > 0) {
+			s = (d / (1 - Math.abs(2 * l - 1))) * 100;
+			h = max === r ? 60 * (((g - b) / d) % 6) : max === g ? 60 * ((b - r) / d + 2) : 60 * ((r - g) / d + 4);
+			if (h < 0) h += 360;
+		}
+	}
+	if (s < 8) return panelColors();
+	return { deep: hsl(h, s * 0.8, 11), band: hsl(h, s, 52), text: hsl(h, s, 78), on: hsl(h, s, 60) };
+}
+
 /** Glow (55%) and text (72%) colors for a ChasePlane theme. */
 export function themeColors(theme?: string): { glow: string; text: string } {
 	const [h, s] = (theme && THEMES[theme]) || FALLBACK;
