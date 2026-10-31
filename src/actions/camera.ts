@@ -10,8 +10,10 @@ import streamDeck, {
 import type { JsonValue } from "@elgato/utils";
 
 import { chasePlane, viewLabel } from "../chaseplane/client";
-import { themeColors, viewTags } from "../chaseplane/themes";
-import { nameLines, viewImage } from "./view-key";
+import { viewTags } from "../chaseplane/themes";
+import { groupLibrary } from "../chaseplane/groups";
+import { keyImage, keyStyle, viewLook } from "./key-style";
+import { nameLines } from "./view-key";
 
 /**
  * Longest name that fits one title line at the generated keys' bold size 9: about 12 characters,
@@ -45,6 +47,9 @@ export class CameraAction extends SingletonAction<CameraSettings> {
 		super();
 		chasePlane.on("camera", () => this.renderAll());
 		chasePlane.on("connection", () => this.renderAll());
+		// Drawn keys show the group name and follow the key style.
+		groupLibrary.on("groups", () => this.renderAll());
+		keyStyle.on("style", () => this.renderAll());
 		chasePlane.on("views", () => {
 			this.sendViews();
 			this.renderAll();
@@ -115,10 +120,7 @@ export class CameraAction extends SingletonAction<CameraSettings> {
 
 		if (current.draw) {
 			// Drawn key: the image carries the name and the glow, so state stays 0 and the title stays empty.
-			const name = view?.name ?? current.name ?? "?";
-			const tags = view ? viewTags(view) : "";
-			const colors = view ? themeColors(view.profile_theme) : { glow: "#555555", text: "#777777" };
-			const image = viewImage(name, tags, colors, active);
+			const image = keyImage(view ? viewLook(view, active) : { name: current.name ?? "?", sub: "NOT FOUND" });
 			if (this.drawnById.get(id) !== image) {
 				this.drawnById.set(id, image);
 				await target.setImage(image, { state: 0 });

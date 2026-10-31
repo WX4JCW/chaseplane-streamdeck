@@ -34,6 +34,19 @@ function hsl(h: number, s: number, l: number): string {
 	return `#${[f(0), f(8), f(4)].map((x) => Math.round(x * 255).toString(16).padStart(2, "0")).join("").toUpperCase()}`;
 }
 
+/**
+ * Panel key colors (the deck's key style, owner's pick 2026-10-31): `deep` fills the key, `band`
+ * is the caption band, `text` the name, `on` the active ring. Without a theme, neutral grey with
+ * green for "on".
+ */
+export function panelColors(theme?: string): { deep: string; band: string; text: string; on: string } {
+	const hs = theme ? THEMES[theme] : undefined;
+	// Neutral band light enough for black caption text (owner: dark grey with black was too little contrast).
+	if (!hs) return { deep: "#16161A", band: "#A8A8B0", text: "#E1E1E1", on: "#3DDC84" };
+	const [h, s] = hs;
+	return { deep: hsl(h, s * 0.8, 11), band: hsl(h, s, 52), text: hsl(h, s, 78), on: hsl(h, s, 60) };
+}
+
 /** Glow (55%) and text (72%) colors for a ChasePlane theme. */
 export function themeColors(theme?: string): { glow: string; text: string } {
 	const [h, s] = (theme && THEMES[theme]) || FALLBACK;

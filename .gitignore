@@ -12,3 +12,7 @@ tools/backup_test_profile/
 tools/backup_traffic_page/
 tools/generate/out/
 tools/generate/backup/
+tools/backup_testbed/
+tools/backup_chaseplane/
+dist/
+__pycache__/

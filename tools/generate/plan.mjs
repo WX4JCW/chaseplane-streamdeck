@@ -79,8 +79,11 @@ async function liveViews() {
 	});
 }
 
-/** Layout names match ChasePlane's names ignoring case and extra spaces, so a rename in capitals keeps its rules. */
-const norm = (s) => String(s).trim().replace(/\s+/g, " ").toLowerCase();
+/**
+ * Layout names match ChasePlane's names ignoring case, extra spaces and the line-break markers
+ * (" / " with spaces, or "|"), so a rename in capitals or with a break keeps its rules.
+ */
+const norm = (s) => String(s).replace(/\s+\/\s+|\|/g, " ").trim().replace(/\s+/g, " ").toLowerCase();
 const inList = (list, name) => (list ?? []).some((n) => norm(n) === norm(name));
 const icons = new Map(Object.entries(layout.icons ?? {}).map(([k, v]) => [norm(k), v]));
 
@@ -147,7 +150,9 @@ for (const folder of layout.folders) {
 	// Flashlight and cinematic keep their own glyph colors (white beam), so they are not tinted.
 	for (const e of folder.extras ?? []) keys[e.pos] = { kind: e.action, icon: e.icon, glow: "#FFFFFF", text: "#FFFFFF", title: "" };
 
-	if (folder.fill === "sequential") {
+	// A hand-laid folder made for another aircraft (none of its names or seats here) fills like the others.
+	const foreign = (folder.place || folder.seatMap) && used.size === 0;
+	if (folder.fill === "sequential" || foreign) {
 		// A2 left to right, row by row, skipping A1 (back) and the extras; ChasePlane's order:
 		// theme by theme as the folder lists them (included views last), then ChasePlane's index.
 		const rank = (v) => (folder.themes.includes(v.profile_theme) ? folder.themes.indexOf(v.profile_theme) : folder.themes.length);

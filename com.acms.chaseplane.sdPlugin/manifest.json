@@ -1,6 +1,6 @@
 {
 	"Name": "ChasePlane Cameras",
-	"Version": "0.1.0.0",
+	"Version": "0.1.0.16",
 	"Author": "ACMS Digital Systems",
 	"Actions": [
 		{
@@ -9,11 +9,19 @@
 			"Icon": "imgs/actions/camera/icon",
 			"Tooltip": "Switches ChasePlane to a saved view. Glows while that view is active.",
 			"PropertyInspectorPath": "ui/camera.html",
-			"Controllers": ["Keypad"],
+			"Controllers": [
+				"Keypad"
+			],
 			"DisableAutomaticStates": true,
 			"States": [
-				{ "Image": "imgs/actions/camera/key", "TitleAlignment": "bottom" },
-				{ "Image": "imgs/actions/camera/key-on", "TitleAlignment": "bottom" }
+				{
+					"Image": "imgs/actions/camera/key",
+					"TitleAlignment": "bottom"
+				},
+				{
+					"Image": "imgs/actions/camera/key-on",
+					"TitleAlignment": "bottom"
+				}
 			]
 		},
 		{
@@ -21,11 +29,19 @@
 			"UUID": "com.acms.chaseplane.flashlight",
 			"Icon": "imgs/actions/flashlight/icon",
 			"Tooltip": "Toggles the ChasePlane flashlight. Glows while it is on.",
-			"Controllers": ["Keypad"],
+			"Controllers": [
+				"Keypad"
+			],
 			"DisableAutomaticStates": true,
 			"States": [
-				{ "Image": "imgs/actions/flashlight/key", "TitleAlignment": "bottom" },
-				{ "Image": "imgs/actions/flashlight/key-on", "TitleAlignment": "bottom" }
+				{
+					"Image": "imgs/actions/flashlight/key",
+					"TitleAlignment": "bottom"
+				},
+				{
+					"Image": "imgs/actions/flashlight/key-on",
+					"TitleAlignment": "bottom"
+				}
 			]
 		},
 		{
@@ -33,11 +49,19 @@
 			"UUID": "com.acms.chaseplane.cinematic",
 			"Icon": "imgs/actions/cinematic/icon",
 			"Tooltip": "Toggles ChasePlane cinematics. Glows while they are on.",
-			"Controllers": ["Keypad"],
+			"Controllers": [
+				"Keypad"
+			],
 			"DisableAutomaticStates": true,
 			"States": [
-				{ "Image": "imgs/actions/cinematic/key", "TitleAlignment": "bottom" },
-				{ "Image": "imgs/actions/cinematic/key-on", "TitleAlignment": "bottom" }
+				{
+					"Image": "imgs/actions/cinematic/key",
+					"TitleAlignment": "bottom"
+				},
+				{
+					"Image": "imgs/actions/cinematic/key-on",
+					"TitleAlignment": "bottom"
+				}
 			]
 		},
 		{
@@ -45,11 +69,19 @@
 			"UUID": "com.acms.chaseplane.traffic-slot",
 			"Icon": "imgs/actions/traffic-slot/icon",
 			"Tooltip": "Shows one aircraft from ChasePlane's traffic list. Press to view it; glows while viewed.",
-			"Controllers": ["Keypad"],
+			"Controllers": [
+				"Keypad"
+			],
 			"DisableAutomaticStates": true,
 			"States": [
-				{ "Image": "imgs/actions/traffic-slot/empty", "TitleAlignment": "bottom" },
-				{ "Image": "imgs/actions/traffic-slot/empty", "TitleAlignment": "bottom" }
+				{
+					"Image": "imgs/actions/traffic-slot/empty",
+					"TitleAlignment": "bottom"
+				},
+				{
+					"Image": "imgs/actions/traffic-slot/empty",
+					"TitleAlignment": "bottom"
+				}
 			]
 		},
 		{
@@ -57,16 +89,112 @@
 			"UUID": "com.acms.chaseplane.my-aircraft",
 			"Icon": "imgs/actions/my-aircraft/icon",
 			"Tooltip": "Puts the ChasePlane camera back on your aircraft.",
-			"Controllers": ["Keypad"],
-			"States": [{ "Image": "imgs/actions/my-aircraft/key", "TitleAlignment": "bottom" }]
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/my-aircraft/key",
+					"TitleAlignment": "bottom"
+				}
+			]
 		},
 		{
 			"Name": "Traffic Page",
 			"UUID": "com.acms.chaseplane.traffic-page",
 			"Icon": "imgs/actions/traffic-page/icon",
 			"Tooltip": "Previous or next page of traffic slots.",
-			"Controllers": ["Keypad"],
-			"States": [{ "Image": "imgs/actions/traffic-page/key", "TitleAlignment": "bottom" }]
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/traffic-page/key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Deck Key",
+			"UUID": "com.acms.chaseplane.deck",
+			"Icon": "imgs/actions/camera/icon",
+			"Tooltip": "One key of the live ChasePlane deck: home shows your groups, a group shows its views. Fill a whole page with it.",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/traffic-slot/empty",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Deck Dial",
+			"UUID": "com.acms.chaseplane.dial",
+			"Icon": "imgs/actions/camera/icon",
+			"Tooltip": "One dial of the live ChasePlane deck; its job comes from its position: group, view, mode, cinematic, director, traffic.",
+			"Controllers": [
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "layouts/dial.json",
+				"TriggerDescription": {
+					"Rotate": "Step through",
+					"Push": "Home / first / select",
+					"Touch": "Same as push"
+				}
+			},
+			"States": [
+				{
+					"Image": "imgs/actions/traffic-slot/empty"
+				}
+			]
+		},
+		{
+			"Name": "Status",
+			"UUID": "com.acms.chaseplane.status",
+			"Icon": "imgs/actions/camera/icon",
+			"Tooltip": "Green while connected to ChasePlane, with the loaded aircraft; red while not.",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/traffic-slot/empty",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Key Style (temporary)",
+			"UUID": "com.acms.chaseplane.key-style",
+			"Icon": "imgs/actions/camera/icon",
+			"Tooltip": "Temporary: press to switch every drawn key between style A (Edge) and B (Panel).",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/traffic-slot/empty",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "SVG Test (temporary)",
+			"UUID": "com.acms.chaseplane.svg-test",
+			"Icon": "imgs/actions/camera/icon",
+			"Tooltip": "Temporary: press to step through SVG drawing tests.",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/camera/key",
+					"TitleAlignment": "bottom"
+				}
+			]
 		}
 	],
 	"Category": "ChasePlane Cameras",

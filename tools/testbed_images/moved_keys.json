@@ -1,0 +1,260 @@
+{
+ "1,3": {
+  "action": {
+   "ActionID": "aef3f0e3-7b96-4da0-b7de-2aed9172b849",
+   "LinkedTitle": true,
+   "Name": "Hotkey",
+   "Plugin": {
+    "Name": "Activate a Key Command",
+    "UUID": "com.elgato.streamdeck.system.hotkey",
+    "Version": "1.0"
+   },
+   "Resources": null,
+   "Settings": {
+    "Coalesce": true,
+    "Hotkeys": [
+     {
+      "KeyCmd": false,
+      "KeyCtrl": true,
+      "KeyModifiers": 2,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 32,
+      "QTKeyCode": 32,
+      "VKeyCode": 32
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     }
+    ]
+   },
+   "State": 0,
+   "States": [
+    {
+     "FontFamily": "",
+     "FontSize": 8,
+     "FontStyle": "",
+     "FontUnderline": false,
+     "Image": "Images/MOHHJ5SGNH1D37JTA93C1HT9V0Z.png",
+     "OutlineThickness": 2,
+     "ShowTitle": true,
+     "Title": "CAM \nPOSITION",
+     "TitleAlignment": "bottom",
+     "TitleColor": "#b8c0c7"
+    }
+   ],
+   "UUID": "com.elgato.streamdeck.system.hotkey"
+  },
+  "image": "campos"
+ },
+ "2,3": {
+  "action": {
+   "ActionID": "9b6dafe1-0b6f-485d-a5e3-aae647bc906f",
+   "LinkedTitle": true,
+   "Name": "Hotkey",
+   "Plugin": {
+    "Name": "Activate a Key Command",
+    "UUID": "com.elgato.streamdeck.system.hotkey",
+    "Version": "1.0"
+   },
+   "Resources": null,
+   "Settings": {
+    "Coalesce": true,
+    "Hotkeys": [
+     {
+      "KeyCmd": false,
+      "KeyCtrl": true,
+      "KeyModifiers": 2,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 39,
+      "QTKeyCode": 16777236,
+      "VKeyCode": 39
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     }
+    ]
+   },
+   "State": 0,
+   "States": [
+    {
+     "FontFamily": "Arial",
+     "FontSize": 8,
+     "FontStyle": "Bold",
+     "FontUnderline": false,
+     "Image": "Images/8O91EF7SJT7IJB77TS0CSBGE5KZ.png",
+     "OutlineThickness": 2,
+     "ShowTitle": true,
+     "Title": "NEXT\nCAMERA",
+     "TitleAlignment": "bottom",
+     "TitleColor": "#b8c0c7"
+    }
+   ],
+   "UUID": "com.elgato.streamdeck.system.hotkey"
+  },
+  "image": "camnext"
+ },
+ "3,3": {
+  "action": {
+   "ActionID": "7ec43095-2a9a-48bc-aef3-c7a9ec5a10f4",
+   "LinkedTitle": true,
+   "Name": "Hotkey",
+   "Plugin": {
+    "Name": "Activate a Key Command",
+    "UUID": "com.elgato.streamdeck.system.hotkey",
+    "Version": "1.0"
+   },
+   "Resources": null,
+   "Settings": {
+    "Coalesce": true,
+    "Hotkeys": [
+     {
+      "KeyCmd": false,
+      "KeyCtrl": true,
+      "KeyModifiers": 2,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 37,
+      "QTKeyCode": 16777234,
+      "VKeyCode": 37
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     },
+     {
+      "KeyCmd": false,
+      "KeyCtrl": false,
+      "KeyModifiers": 0,
+      "KeyOption": false,
+      "KeyShift": false,
+      "NativeCode": 146,
+      "QTKeyCode": 33554431,
+      "VKeyCode": -1
+     }
+    ]
+   },
+   "State": 0,
+   "States": [
+    {
+     "FontFamily": "Arial",
+     "FontSize": 8,
+     "FontStyle": "Bold",
+     "FontUnderline": false,
+     "Image": "Images/NLW82F8JDD11R5MOO2LGQBW26GZ.png",
+     "OutlineThickness": 2,
+     "ShowTitle": true,
+     "Title": "PREVIOUS\nCAMERA",
+     "TitleAlignment": "bottom",
+     "TitleColor": "#b8c0c7"
+    }
+   ],
+   "UUID": "com.elgato.streamdeck.system.hotkey"
+  },
+  "image": "camprev"
+ },
+ "4,3": {
+  "action": {
+   "ActionID": "673a7abd-3d2e-411c-9262-549ce9065509",
+   "LinkedTitle": true,
+   "Name": "Screenshot",
+   "Plugin": {
+    "Name": "ShareX",
+    "UUID": "com.reedhaffner.sharex",
+    "Version": "1.3.1"
+   },
+   "Resources": null,
+   "Settings": {
+    "type": "ActiveWindow"
+   },
+   "State": 0,
+   "States": [
+    {
+     "FontFamily": "Arial",
+     "FontSize": 9,
+     "FontStyle": "Bold",
+     "FontUnderline": false,
+     "Image": "Images/OLD6TRPRC95SRA560JQ3WNLVGKZ.png",
+     "OutlineThickness": 2,
+     "ShowTitle": true,
+     "Title": "Screenshot",
+     "TitleAlignment": "bottom",
+     "TitleColor": "#ffffff"
+    }
+   ],
+   "UUID": "com.reedhaffner.screenshot"
+  },
+  "image": "screenshot"
+ }
+}

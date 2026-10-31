@@ -1,6 +1,7 @@
 import streamDeck, { action, KeyDownEvent, SingletonAction, WillAppearEvent, WillDisappearEvent } from "@elgato/streamdeck";
 
 import { chasePlane } from "../chaseplane/client";
+import { keyImage, keyStyle } from "./key-style";
 import { slotImage } from "./traffic-key";
 
 type SlotSettings = { slot?: number };
@@ -100,6 +101,20 @@ export class TrafficSlotAction extends SingletonAction<SlotSettings> {
 /** Returns the camera to the user's aircraft. */
 @action({ UUID: "com.acms.chaseplane.my-aircraft" })
 export class MyAircraftAction extends SingletonAction {
+	constructor() {
+		super();
+		keyStyle.on("style", () => this.renderAll());
+	}
+
+	override onWillAppear(): void {
+		this.renderAll();
+	}
+
+	private renderAll(): void {
+		const image = keyImage({ caption: "Camera", name: "My Aircraft" });
+		for (const a of this.actions) if (a.isKey()) void a.setImage(image);
+	}
+
 	override async onKeyDown(ev: KeyDownEvent): Promise<void> {
 		try {
 			await chasePlane.trackUserAircraft();

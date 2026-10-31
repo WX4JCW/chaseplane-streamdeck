@@ -7,7 +7,13 @@ export type View = {
 	guid: string;
 	name: string;
 	mode: number;
+	/** ChasePlane's own order. */
+	index?: number;
 	profile_theme?: string;
+	/** GUID of the ChasePlane group the view belongs to (see groups.ts). */
+	profile_preset?: string;
+	/** Aircraft the view belongs to ("PMDG 737-800 SSW HUES SWA"); "%GLOBAL%" for views every aircraft shares. */
+	aircraft_readable?: string;
 	has_left_suffix?: boolean;
 	has_right_suffix?: boolean;
 	has_fwd_suffix?: boolean;
@@ -112,6 +118,16 @@ export class ChasePlaneClient extends EventEmitter {
 
 	toggleCinematic(): Promise<void> {
 		return this.request("cam_cinematic_toggle");
+	}
+
+	/** 0 cockpit, 1 exterior, 2 world; ChasePlane picks the view (verified 2026-10-31: replies mode_name, cam_mode_set follows). */
+	setCameraMode(mode: number): Promise<void> {
+		return this.request("set_camera_mode", { mode });
+	}
+
+	/** Next cinematic shot (ChasePlane Remote command; untested while cinematics were off, 2026-10-31). */
+	nextCinematicShot(): Promise<void> {
+		return this.request("cam_cinematic_next");
 	}
 
 	/** Switches to the World Traffic camera on one AI aircraft (what ChasePlane Remote does on a list click). */
@@ -259,7 +275,9 @@ export function viewLabel(view: View): string {
 		view.has_mid_suffix && "MID",
 		view.has_aft_suffix && "AFT",
 	].filter(Boolean);
-	const name = suffix.length ? `${view.name} (${suffix.join(" ")})` : view.name;
+	// The "|" line-break marker (see view-key.ts) reads as a space in a one-line label.
+	const plain = view.name.split("|").map((s) => s.trim()).filter(Boolean).join(" ");
+	const name = suffix.length ? `${plain} (${suffix.join(" ")})` : plain;
 	return `${MODE_PREFIX[view.mode] ?? view.mode} · ${name}`;
 }
 
