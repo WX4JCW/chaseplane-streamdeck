@@ -9,7 +9,7 @@ const { execSync } = require("child_process");
 const DRY = process.argv.includes("--dry-run");
 const PAGE = path.join(process.env.APPDATA, "Elgato/StreamDeck/ProfilesV3/227856A2-5D79-4BA9-A9DA-769A3F195C15.sdProfile/Profiles/FE5831E1-5723-4DA0-8CBB-DFA035454D37");
 const BACKUP = path.join(__dirname, "backup_traffic_page");
-const PLUGIN = { Name: "ChasePlane Cameras", UUID: "com.acms.chaseplane", Version: "0.1.0.0" };
+const PLUGIN = { Name: "Camera Deck for ChasePlane", UUID: "com.acms.chaseplane", Version: "0.1.0.0" };
 
 if (!DRY && execSync("tasklist").toString().toLowerCase().includes("streamdeck.exe")) {
 	console.error("Stream Deck is running. Quit it first.");

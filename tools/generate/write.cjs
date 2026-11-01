@@ -16,7 +16,7 @@ const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE,
 
 const PROFILE = path.join(process.env.APPDATA, "Elgato/StreamDeck/ProfilesV3", `${plan.profile}.sdProfile`);
 const PAGES = path.join(PROFILE, "Profiles");
-const PLUGIN = { Name: "ChasePlane Cameras", UUID: "com.acms.chaseplane", Version: "0.1.0.0" };
+const PLUGIN = { Name: "Camera Deck for ChasePlane", UUID: "com.acms.chaseplane", Version: "0.1.0.0" };
 
 if (!DRY && execSync("tasklist").toString().toLowerCase().includes("streamdeck.exe")) {
 	console.error("Stream Deck is running. Quit it first.");

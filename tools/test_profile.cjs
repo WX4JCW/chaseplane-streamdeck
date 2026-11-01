@@ -10,7 +10,7 @@ const DRY = process.argv.includes("--dry-run");
 const GLOW = "D:/Bundled Images/StreamDeck Icons/Working Icons/Glow";
 const PAGE = path.join(process.env.APPDATA, "Elgato/StreamDeck/ProfilesV3/227856A2-5D79-4BA9-A9DA-769A3F195C15.sdProfile/Profiles/A0D29719-64E3-4B2E-8A44-C77CB9CD9CAE");
 const BACKUP = path.join(__dirname, "backup_test_profile");
-const PLUGIN = { Name: "ChasePlane Cameras", UUID: "com.acms.chaseplane", Version: "0.1.0.0" };
+const PLUGIN = { Name: "Camera Deck for ChasePlane", UUID: "com.acms.chaseplane", Version: "0.1.0.0" };
 
 // position -> [action, camera guid or null, glow icon or null (plugin default image)]
 const BUTTONS = {

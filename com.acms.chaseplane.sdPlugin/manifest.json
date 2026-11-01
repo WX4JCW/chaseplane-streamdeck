@@ -1,6 +1,6 @@
 {
-	"Name": "ChasePlane Cameras",
-	"Version": "0.1.0.21",
+	"Name": "Camera Deck for ChasePlane",
+	"Version": "0.1.0.22",
 	"Author": "ACMS Digital Systems",
 	"Actions": [
 		{
@@ -197,7 +197,7 @@
 			]
 		}
 	],
-	"Category": "ChasePlane Cameras",
+	"Category": "Camera Deck for ChasePlane",
 	"CategoryIcon": "imgs/plugin/category-icon",
 	"CodePath": "bin/plugin.js",
 	"Description": "ChasePlane camera control with live active-camera state.",

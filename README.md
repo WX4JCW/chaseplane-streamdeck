@@ -1,4 +1,4 @@
-# ChasePlane Cameras (Stream Deck plugin)
+# Camera Deck for ChasePlane (Stream Deck plugin)
 
 From ACMS Digital Systems, makers of [Datalink Pro](https://acmsdigital.com): a Windows app that puts a virtual ACARS terminal in your MSFS 2020 or 2024 cockpit, with an automated airline dispatch office on the other end.
 
@@ -8,7 +8,7 @@ From ACMS Digital Systems, makers of [Datalink Pro](https://acmsdigital.com): a 
 |---|---|
 | ![Seating group](docs/guide_seating.png) | ![SimDeck main page](docs/simdeck_main.png) |
 
-Setup guide for users: [docs/ChasePlane Deck Setup Guide.pdf](docs/ChasePlane%20Deck%20Setup%20Guide.pdf).
+Setup guide for users: [docs/Camera Deck for ChasePlane Setup Guide.pdf](docs/Camera%20Deck%20for%20ChasePlane%20Setup%20Guide.pdf).
 
 Stream Deck keys for ChasePlane in MSFS 2024: camera views, flashlight, cinematics and live
 traffic. The plugin mirrors what ChasePlane reports, live, over `ws://localhost:8652`. It never

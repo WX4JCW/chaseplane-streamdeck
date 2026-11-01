@@ -1,4 +1,4 @@
-# Builds the ready-made "ChasePlane Deck" profile for the Stream Deck + XL, packed into the plugin:
+# Builds the ready-made "Camera Deck for ChasePlane" profile for the Stream Deck + XL, packed into the plugin:
 #   com.acms.chaseplane.sdPlugin/profiles/ChasePlaneDeck-PlusXL.streamDeckProfile
 # Only this plugin's own actions: Deck Keys everywhere, Flashlight, Cinematic, My Aircraft and Status
 # at the bottom right, a Deck Dial on each of the six dials (owner, 2026-10-31: "No other buttons or
@@ -53,7 +53,7 @@ dials = {f"{col},0": action(100 + col, "Deck Dial", "dial", [{}]) for col in ran
 
 root = {
     "Device": {"Model": PLUS_XL_MODEL, "UUID": ""},
-    "Name": "ChasePlane Deck",
+    "Name": "Camera Deck for ChasePlane",
     "Pages": {"Current": PAGE_ID.lower(), "Default": PAGE_ID.lower(), "Pages": [PAGE_ID.lower()]},
     "Version": "3.0",
 }

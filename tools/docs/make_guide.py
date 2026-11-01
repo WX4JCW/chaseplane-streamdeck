@@ -1,4 +1,4 @@
-# Builds docs/ChasePlane Deck Setup Guide.pdf: the end-user setup guide in plain English.
+# Builds docs/Camera Deck for ChasePlane Setup Guide.pdf: the end-user setup guide in plain English.
 # Usage: python tools/docs/make_guide.py   (run from the repository root)
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
@@ -7,7 +7,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import Image, KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-OUT = "docs/ChasePlane Deck Setup Guide.pdf"
+OUT = "docs/Camera Deck for ChasePlane Setup Guide.pdf"
 CYAN = colors.HexColor("#1FA3C2")
 INK = colors.HexColor("#1B1F24")
 GREY = colors.HexColor("#5C6670")
@@ -65,12 +65,12 @@ def picture(path, caption, width=6.5 * inch):
 
 # ---- Cover
 story.append(Spacer(1, 1.4 * inch))
-P("ChasePlane Deck", title)
+P("Camera Deck for ChasePlane", title)
 story.append(Spacer(1, 6))
 P("Setup guide: your ChasePlane cameras on the Stream Deck, organised the way you organise them in ChasePlane.", subtitle)
 story.append(Spacer(1, 18))
 picture("docs/guide_home.png", "The home screen: your ChasePlane groups on the keys, and the camera dials and touch strip below.")
-P("ACMS Digital Systems · ChasePlane Cameras plugin 0.1.0.21 · Microsoft Flight Simulator 2024", note)
+P("ACMS Digital Systems · Camera Deck for ChasePlane 0.1.0.22 · Microsoft Flight Simulator 2024", note)
 story.append(PageBreak())
 
 # ---- 1
@@ -92,20 +92,20 @@ table([
     ["ChasePlane by Parallel 42", "Running. The deck talks to ChasePlane on this PC; nothing to set up."],
     ["Stream Deck + XL", "9 x 4 keys and 6 dials. The layout in this guide is for the + XL."],
     ["Stream Deck app 7.1 or newer", "Windows 10 or 11."],
-    ["ChasePlane Cameras plugin", "The file <b>com.acms.chaseplane.streamDeckPlugin</b>."],
+    ["Camera Deck for ChasePlane plugin", "The file <b>com.acms.chaseplane.streamDeckPlugin</b>."],
 ], [2.2 * inch, 4.3 * inch])
 
 P("3. Install the plugin", h1)
 B([
     "Keep the Stream Deck app open and double-click <b>com.acms.chaseplane.streamDeckPlugin</b>. Click Install if asked.",
-    "Stream Deck offers the ready-made <b>ChasePlane Deck</b> profile for your + XL. Accept it: the whole deck is set up for you (section 4 shows what is on it).",
-    "In the Stream Deck app, the action list on the right now has a <b>ChasePlane Cameras</b> category.",
+    "Stream Deck offers the ready-made <b>Camera Deck for ChasePlane</b> profile for your + XL. Accept it: the whole deck is set up for you (section 4 shows what is on it).",
+    "In the Stream Deck app, the action list on the right now has a <b>Camera Deck for ChasePlane</b> category.",
     "Updating later: double-click the new file the same way. Stream Deck only accepts a file with a newer version number.",
 ])
 
 # ---- 4
 P("4. The deck page", h1)
-P("The <b>ChasePlane Deck</b> profile comes laid out like this. To build it on another page yourself, drag the same actions from the <b>ChasePlane Cameras</b> list:")
+P("The <b>Camera Deck for ChasePlane</b> profile comes laid out like this. To build it on another page yourself, drag the same actions from the <b>Camera Deck for ChasePlane</b> list:")
 table([
     ["Where", "What to drag", "What it becomes"],
     ["Rows 1 to 3, every key", "<b>Deck Key</b>", "The live keys: group names on the home screen, camera views inside a group."],
@@ -192,11 +192,11 @@ def footer(canvas, doc):
     canvas.saveState()
     canvas.setFont("Helvetica", 8)
     canvas.setFillColor(GREY)
-    canvas.drawString(inch, 0.55 * inch, "ChasePlane Deck · Setup guide")
+    canvas.drawString(inch, 0.55 * inch, "Camera Deck for ChasePlane · Setup guide")
     canvas.drawRightString(letter[0] - inch, 0.55 * inch, f"Page {doc.page}")
     canvas.restoreState()
 
 
 SimpleDocTemplate(OUT, pagesize=letter, leftMargin=inch, rightMargin=inch, topMargin=0.8 * inch, bottomMargin=0.85 * inch,
-                  title="ChasePlane Deck Setup Guide", author="ACMS Digital Systems").build(story, onFirstPage=footer, onLaterPages=footer)
+                  title="Camera Deck for ChasePlane Setup Guide", author="ACMS Digital Systems").build(story, onFirstPage=footer, onLaterPages=footer)
 print("written", OUT)

@@ -1,4 +1,4 @@
-# Plan: ChasePlane Cameras plugin (com.acms.chaseplane)
+# Plan: Camera Deck for ChasePlane plugin (com.acms.chaseplane)
 
 Facts here were verified on this PC; each names its evidence and date. Anything not proven is
 under "Open" with the check that settles it, and nothing is built on it until it is checked.

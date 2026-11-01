@@ -103,7 +103,7 @@ back over `%APPDATA%\Elgato\StreamDeck\ProfilesV3\227856A2-5D79-4BA9-A9DA-769A3F
 
 ## Requirements
 
-- The ChasePlane Cameras plugin (`com.acms.chaseplane`) installed in Stream Deck from its
+- The Camera Deck for ChasePlane plugin (`com.acms.chaseplane`) installed in Stream Deck from its
   package (top-level `README.md`).
 - Node.js and Python with Pillow and NumPy.
 - The glyph PNGs in `D:\Bundled Images\StreamDeck Icons\Working Icons` (Traffic_Red falls back to
