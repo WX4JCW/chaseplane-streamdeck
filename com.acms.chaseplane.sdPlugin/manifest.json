@@ -1,6 +1,6 @@
 {
 	"Name": "ChasePlane Cameras",
-	"Version": "0.1.0.20",
+	"Version": "0.1.0.21",
 	"Author": "ACMS Digital Systems",
 	"Actions": [
 		{
@@ -220,5 +220,13 @@
 		"Version": "24",
 		"Debug": "enabled"
 	},
+	"Profiles": [
+		{
+			"Name": "profiles/ChasePlaneDeck-PlusXL",
+			"DeviceType": 13,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true
+		}
+	],
 	"UUID": "com.acms.chaseplane"
 }
