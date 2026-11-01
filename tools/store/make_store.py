@@ -109,7 +109,7 @@ def gallery_dials():
     return c
 
 
-def icon():
+def icon(px=288):
     s = 4  # draw at 4x, then shrink, for smooth edges
     c = Image.new("RGB", (288 * s, 288 * s), DEEP)
     d = ImageDraw.Draw(c)
@@ -118,11 +118,14 @@ def icon():
     light = (190, 238, 248)
     d.text((144 * s, 140 * s), "CAMERA", font=font(62 * s), fill=light, anchor="mm")
     d.text((144 * s, 212 * s), "DECK", font=font(78 * s), fill=light, anchor="mm")
-    return c.resize((288, 288), Image.LANCZOS)
+    return c.resize((px, px), Image.LANCZOS)
 
 
 os.makedirs(OUT, exist_ok=True)
 icon().save(f"{OUT}/icon.png")
+# The plugin's own Marketplace icon, shown in Stream Deck.
+icon().save("com.acms.chaseplane.sdPlugin/imgs/plugin/marketplace.png")
+icon(512).save("com.acms.chaseplane.sdPlugin/imgs/plugin/marketplace@2x.png")
 for name, make in [("thumbnail", thumbnail), ("gallery-1", gallery_home), ("gallery-2", gallery_seating), ("gallery-3", gallery_dials)]:
     make().convert("RGB").save(f"{OUT}/{name}.png")
 print("written", OUT)
