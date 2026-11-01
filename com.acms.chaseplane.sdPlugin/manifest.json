@@ -1,6 +1,6 @@
 {
 	"Name": "Camera Deck for ChasePlane",
-	"Version": "0.1.0.22",
+	"Version": "0.1.0.23",
 	"Author": "ACMS Digital Systems",
 	"Actions": [
 		{
@@ -165,42 +165,12 @@
 					"TitleAlignment": "bottom"
 				}
 			]
-		},
-		{
-			"Name": "Key Style (temporary)",
-			"UUID": "com.acms.chaseplane.key-style",
-			"Icon": "imgs/actions/camera/icon",
-			"Tooltip": "Temporary: press to switch every drawn key between style A (Edge) and B (Panel).",
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "imgs/actions/traffic-slot/empty",
-					"TitleAlignment": "bottom"
-				}
-			]
-		},
-		{
-			"Name": "SVG Test (temporary)",
-			"UUID": "com.acms.chaseplane.svg-test",
-			"Icon": "imgs/actions/camera/icon",
-			"Tooltip": "Temporary: press to step through SVG drawing tests.",
-			"Controllers": [
-				"Keypad"
-			],
-			"States": [
-				{
-					"Image": "imgs/actions/camera/key",
-					"TitleAlignment": "bottom"
-				}
-			]
 		}
 	],
 	"Category": "Camera Deck for ChasePlane",
 	"CategoryIcon": "imgs/plugin/category-icon",
 	"CodePath": "bin/plugin.js",
-	"Description": "ChasePlane camera control with live active-camera state.",
+	"Description": "Your ChasePlane camera views and groups on Stream Deck, kept up to date live.",
 	"Icon": "imgs/plugin/marketplace",
 	"SDKVersion": 3,
 	"Software": {
@@ -208,17 +178,12 @@
 	},
 	"OS": [
 		{
-			"Platform": "mac",
-			"MinimumVersion": "12"
-		},
-		{
 			"Platform": "windows",
 			"MinimumVersion": "10"
 		}
 	],
 	"Nodejs": {
-		"Version": "24",
-		"Debug": "enabled"
+		"Version": "24"
 	},
 	"Profiles": [
 		{

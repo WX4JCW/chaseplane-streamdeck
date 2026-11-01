@@ -31,7 +31,6 @@ The camera folders on the SimDeck profile are built by the generator in `tools/g
 | My Aircraft | Camera back to your aircraft (`user_aircraft_track`) | Fixed image | none |
 | Status | Nothing | Green dot, CHASEPLANE and the loaded aircraft while connected; red OFFLINE while not (the plugin retries every 3 s) | none |
 | Deck Key | Depends on its job (below) | One key of the live deck, drawn by the plugin | none; its job comes from its position |
-| SVG Test (temporary) | Next drawing test | Shapes, embedded image, mask, filter | none |
 
 Deck Key: a page filled with Deck Keys works like an app, entirely live.
 - Home: one row each for onboard, outside and world; the area's name in column 1, then its groups in
