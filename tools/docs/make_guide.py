@@ -70,7 +70,7 @@ story.append(Spacer(1, 6))
 P("Setup guide: your ChasePlane cameras on the Stream Deck, organised the way you organise them in ChasePlane.", subtitle)
 story.append(Spacer(1, 18))
 picture("docs/guide_home.png", "The home screen: your ChasePlane groups on the keys, and the camera dials and touch strip below.")
-P("ACMS Digital Systems · ChasePlane Cameras plugin 0.1 · Microsoft Flight Simulator 2024", note)
+P("ACMS Digital Systems · ChasePlane Cameras plugin 0.1.0.21 · Microsoft Flight Simulator 2024", note)
 story.append(PageBreak())
 
 # ---- 1
@@ -98,17 +98,18 @@ table([
 P("3. Install the plugin", h1)
 B([
     "Keep the Stream Deck app open and double-click <b>com.acms.chaseplane.streamDeckPlugin</b>. Click Install if asked.",
+    "Stream Deck offers the ready-made <b>ChasePlane Deck</b> profile for your + XL. Accept it: the whole deck is set up for you (section 4 shows what is on it).",
     "In the Stream Deck app, the action list on the right now has a <b>ChasePlane Cameras</b> category.",
     "Updating later: double-click the new file the same way. Stream Deck only accepts a file with a newer version number.",
 ])
 
 # ---- 4
-P("4. Build the deck page", h1)
-P("Make a new page (or a new profile) for the + XL, then drag these from the <b>ChasePlane Cameras</b> list:")
+P("4. The deck page", h1)
+P("The <b>ChasePlane Deck</b> profile comes laid out like this. To build it on another page yourself, drag the same actions from the <b>ChasePlane Cameras</b> list:")
 table([
     ["Where", "What to drag", "What it becomes"],
     ["Rows 1 to 3, every key", "<b>Deck Key</b>", "The live keys: group names on the home screen, camera views inside a group."],
-    ["Row 4", "<b>Flashlight</b>, <b>Cinematic</b>, <b>My Aircraft</b>, <b>Status</b>, plus any keys of your own", "Fixed controls on every screen. Status shows green CONNECTED and your aircraft, or red OFFLINE."],
+    ["Row 4, right", "<b>Flashlight</b>, <b>Cinematic</b>, <b>My Aircraft</b>, <b>Status</b>", "Fixed controls on every screen. Status shows green CONNECTED and your aircraft, or red OFFLINE. The rest of row 4 is Deck Keys; swap any for keys of your own."],
     ["All 6 dials", "<b>Deck Dial</b>", "Each dial takes its job from its position (section 8)."],
 ], [1.45 * inch, 2.15 * inch, 2.9 * inch])
 tip("<b>Tip:</b> a Deck Key works out its job from where it sits, so every Deck Key is the same. Drag one, then copy and paste it to fill the rows. "
