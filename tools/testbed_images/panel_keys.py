@@ -4,7 +4,7 @@ import sys
 from PIL import Image, ImageDraw, ImageFont
 
 KEYS = {  # file: (caption, line 1, line 2, app)
-    "cpdeck": ("GO TO", "CP DECK", "", "chaseplane"),
+    "cpdeck": ("GO TO", "CP DECK", "", "cpdeck"),
     "simdeck": ("GO TO", "SIMDECK", "", "simdeck"),
     "gsx": ("OPEN", "GSX", "", "gsx"),
     "sayintentions": ("GO TO", "SAY", "INTENTIONS", "sayintentions"),
@@ -29,7 +29,11 @@ import colorsys
 APPS = {
     "chaseplane": (190, 79), "sayintentions": (43, 75), "anyflight": (220, 85), "gsx": (22, 90),
     "ifly": (355, 75), "weather": (130, 55), "apps": (270, 60), "screenshot": (320, 70), "simdeck": (0, 0),
+    # The CP DECK key: its own amber, because the WX Deck keys share ChasePlane's cyan (owner, 2026-11-01).
+    "cpdeck": (41, 100),
 }
+# A band color the owner picked exactly, instead of the recipe's 52% lightness.
+EXACT_BAND = {"cpdeck": (0xFF, 0xAE, 0x03)}
 
 def hsl(h, s, l):
     r, g, b = colorsys.hls_to_rgb(h / 360, l / 100, s / 100)
@@ -49,7 +53,7 @@ def fit(d, text, base, width=128):
 
 def draw(caption, l1, l2, app):
     h, sat = APPS[app]
-    DEEP, BAND, TEXT = hsl(h, sat * 0.8, 11), hsl(h, sat, 52), hsl(h, sat, 78)
+    DEEP, BAND, TEXT = hsl(h, sat * 0.8, 11), EXACT_BAND.get(app, hsl(h, sat, 52)), hsl(h, sat, 78)
     INK = ink(BAND)
     im = Image.new("RGB", (K, K), (0, 0, 0)); d = ImageDraw.Draw(im)
     d.rounded_rectangle([0, 0, K - 1, K - 1], 18 * S, fill=DEEP)
