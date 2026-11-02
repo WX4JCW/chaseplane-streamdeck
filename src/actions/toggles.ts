@@ -7,6 +7,8 @@ import { keyImage, keyStyle } from "./key-style";
 abstract class ToggleAction extends SingletonAction {
 	protected abstract readonly command: string;
 	protected abstract readonly label: string;
+	/** Its own color, so the key is easy to find (owner, 2026-11-01). */
+	protected abstract readonly color: string;
 	protected abstract isOn(): boolean;
 	protected abstract toggle(): Promise<void>;
 
@@ -32,7 +34,7 @@ abstract class ToggleAction extends SingletonAction {
 
 	private renderAll(): void {
 		const on = chasePlane.ready && this.isOn();
-		const image = keyImage({ caption: "ChasePlane", name: this.label, sub: chasePlane.ready ? (on ? "on" : "off") : "", active: on });
+		const image = keyImage({ caption: "ChasePlane", color: this.color, name: this.label, sub: chasePlane.ready ? (on ? "on" : "off") : "", active: on });
 		for (const a of this.actions) {
 			if (!a.isKey()) continue;
 			// Drawn key: the image shows on/off, so state stays 0 and the title stays empty.
@@ -47,6 +49,7 @@ abstract class ToggleAction extends SingletonAction {
 export class FlashlightAction extends ToggleAction {
 	protected readonly command = "cam_flashlight_toggle";
 	protected readonly label = "Flashlight";
+	protected readonly color = "hsl(52, 90%)";
 
 	constructor() {
 		super("flashlight");
@@ -65,6 +68,7 @@ export class FlashlightAction extends ToggleAction {
 export class CinematicAction extends ToggleAction {
 	protected readonly command = "cam_cinematic_toggle";
 	protected readonly label = "Cinematic";
+	protected readonly color = "hsl(8, 80%)";
 
 	constructor() {
 		super("camera");

@@ -111,7 +111,7 @@ export class MyAircraftAction extends SingletonAction {
 	}
 
 	private renderAll(): void {
-		const image = keyImage({ caption: "Camera", name: "My Aircraft" });
+		const image = keyImage({ caption: "Camera", color: "hsl(140, 60%)", name: "My Aircraft" });
 		for (const a of this.actions) if (a.isKey()) void a.setImage(image);
 	}
 
