@@ -28,12 +28,12 @@ import colorsys
 # sampled from their old key pictures; ChasePlane is its Remote's Pilot cyan, as on the live deck.
 APPS = {
     "chaseplane": (190, 79), "sayintentions": (43, 75), "anyflight": (220, 85), "gsx": (295, 60),
-    "ifly": (355, 75), "weather": (130, 55), "apps": (270, 60), "screenshot": (320, 70), "simdeck": (0, 0),
+    "ifly": (355, 75), "weather": (130, 55), "apps": (218, 24), "screenshot": (320, 70), "simdeck": (0, 0),
     # The CP DECK key: its own amber, because the WX Deck keys share ChasePlane's cyan (owner, 2026-11-01).
     "cpdeck": (41, 100),
 }
 # A band color the owner picked exactly, instead of the recipe's 52% lightness.
-EXACT_BAND = {"cpdeck": (0xFF, 0xAE, 0x03)}
+EXACT_BAND = {"cpdeck": (0xFF, 0xAE, 0x03), "apps": (0x34, 0x40, 0x55)}
 
 def hsl(h, s, l):
     r, g, b = colorsys.hls_to_rgb(h / 360, l / 100, s / 100)
