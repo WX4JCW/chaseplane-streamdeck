@@ -13,9 +13,9 @@ KEYS = {  # file: (caption, line 1, line 2, app)
     "flightpanel": ("GO TO", "FLT PANEL", "38M", "ifly"),
     "weather": ("OPEN", "WEATHER", "", "weather"),
     "apps": ("OPEN", "APPS", "", "apps"),
-    "campos": ("CHASEPLANE", "RESET", "CAM", "chaseplane"),
-    "camnext": ("CHASEPLANE", "NEXT", "CAM", "chaseplane"),
-    "camprev": ("CHASEPLANE", "PREV", "CAM", "chaseplane"),
+    "campos": ("CHASEPLANE", "RESET", "CAM", "camkeys"),
+    "camnext": ("CHASEPLANE", "NEXT", "CAM", "camkeys"),
+    "camprev": ("CHASEPLANE", "PREV", "CAM", "camkeys"),
     "screenshot": ("CAPTURE", "SCREEN", "SHOT", "screenshot"),
 }
 S = 4
@@ -30,10 +30,10 @@ APPS = {
     "chaseplane": (190, 79), "sayintentions": (43, 75), "anyflight": (220, 85), "gsx": (295, 60),
     "ifly": (355, 75), "weather": (130, 55), "apps": (218, 24), "screenshot": (320, 70), "simdeck": (218, 24),
     # The CP DECK key: its own amber, because the WX Deck keys share ChasePlane's cyan (owner, 2026-11-01).
-    "cpdeck": (41, 100),
+    "cpdeck": (41, 100), "camkeys": (260, 86),
 }
 # A band color the owner picked exactly, instead of the recipe's 52% lightness.
-EXACT_BAND = {"cpdeck": (0xFF, 0xAE, 0x03), "apps": (0x34, 0x40, 0x55), "simdeck": (0x34, 0x40, 0x55)}
+EXACT_BAND = {"cpdeck": (0xFF, 0xAE, 0x03), "apps": (0x34, 0x40, 0x55), "simdeck": (0x34, 0x40, 0x55), "camkeys": (0x63, 0x20, 0xEE)}
 
 def hsl(h, s, l):
     r, g, b = colorsys.hls_to_rgb(h / 360, l / 100, s / 100)
