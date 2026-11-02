@@ -27,7 +27,7 @@ import colorsys
 # One color per app, so each is easy to find (owner, 2026-10-31). SayIntentions and AnyFlight are
 # sampled from their old key pictures; ChasePlane is its Remote's Pilot cyan, as on the live deck.
 APPS = {
-    "chaseplane": (190, 79), "sayintentions": (43, 75), "anyflight": (220, 85), "gsx": (22, 90),
+    "chaseplane": (190, 79), "sayintentions": (43, 75), "anyflight": (220, 85), "gsx": (295, 60),
     "ifly": (355, 75), "weather": (130, 55), "apps": (270, 60), "screenshot": (320, 70), "simdeck": (0, 0),
     # The CP DECK key: its own amber, because the WX Deck keys share ChasePlane's cyan (owner, 2026-11-01).
     "cpdeck": (41, 100),
