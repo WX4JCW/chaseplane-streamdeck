@@ -3,7 +3,7 @@ import type { JsonObject } from "@elgato/utils";
 import { EventEmitter } from "node:events";
 
 import { chasePlane, type TrafficAircraft, type View } from "../chaseplane/client";
-import { AREAS, type Group, groupLibrary } from "../chaseplane/groups";
+import { type Area, AREAS, type Group, groupLibrary } from "../chaseplane/groups";
 import { keyImage, keyStyle, viewLook } from "./key-style";
 import { airlineColor, slotLines } from "./traffic-key";
 import { plainName } from "./view-key";
@@ -28,10 +28,13 @@ export function openGroup(guid?: string): void {
 	deckScreen.emit("screen");
 }
 
+/** Quiet tints, so each area reads apart while the brighter group keys beside it still stand out (owner, 2026-11-01). */
+const AREA_COLORS: Record<Area, string> = { onboard: "hsl(215, 30%)", outside: "hsl(150, 28%)", world: "hsl(280, 28%)" };
+
 type Pos = { column: number; row: number };
 type Role =
 	| { kind: "none" }
-	| { kind: "area"; label: string }
+	| { kind: "area"; area: Area }
 	| { kind: "group"; group: Group; count: number }
 	| { kind: "home" }
 	| { kind: "view"; view: View }
@@ -107,7 +110,7 @@ function roles(keys: Array<{ id: string; pos: Pos }>): Map<string, Role> {
 	if (screen.kind === "home") {
 		AREAS.forEach((area, row) => {
 			const label = at(0, row);
-			if (label) out.set(label.id, { kind: "area", label: area.toUpperCase() });
+			if (label) out.set(label.id, { kind: "area", area });
 			const groups = groupLibrary.inArea(area).filter((g) => viewsOf(g.guid).length > 0);
 			const slots = keys.filter((k) => k.pos.row === row && k.pos.column > 0).sort((a, b) => a.pos.column - b.pos.column);
 			slots.forEach((k, i) => {
@@ -219,7 +222,7 @@ export class DeckAction extends SingletonAction {
 			let image: string;
 			switch (role.kind) {
 				case "area":
-					image = keyImage({ name: role.label, caption: "AREA" });
+					image = keyImage({ name: role.area.toUpperCase(), caption: "AREA", color: AREA_COLORS[role.area] });
 					break;
 				case "group":
 					image = keyImage({
