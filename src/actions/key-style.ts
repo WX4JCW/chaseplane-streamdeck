@@ -104,13 +104,8 @@ function styleA(look: KeyLook): string {
 	);
 }
 
-/** Black or white, whichever reads better on `background` (WCAG contrast; dark bands such as Cabin's purple get white). */
-function ink(background: string): string {
-	const lin = (v: number) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
-	const [r, g, b] = [1, 3, 5].map((i) => lin(parseInt(background.slice(i, i + 2), 16) / 255));
-	const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-	return (l + 0.05) / 0.05 >= 1.05 / (l + 0.05) ? "#0A0A0A" : "#FFFFFF";
-}
+/** Caption text on every band: white, with the bands kept dark enough for it (owner, 2026-11-07). */
+const INK = "#FFFFFF";
 
 function styleB(look: KeyLook): string {
 	const c = look.color ? panelColorsFor(look.color) : panelColors(look.theme);
@@ -120,7 +115,7 @@ function styleB(look: KeyLook): string {
 		`<rect width="144" height="144" rx="18" fill="${c.deep}"/>` +
 		(look.caption
 			? `<rect width="144" height="${band}" rx="18" fill="${c.band}"/><rect y="16" width="144" height="${band - 16}" fill="${c.band}"/>` +
-				captionText(21, look.caption, ink(c.band))
+				captionText(21, look.caption, INK)
 			: "") +
 		(look.active ? `<rect x="3" y="3" width="138" height="138" rx="16" fill="none" stroke="${on}" stroke-width="5"/>` : "") +
 		nameText(look, look.caption ? band : 0, look.active ? "#FFFFFF" : c.text) +
@@ -152,7 +147,7 @@ export function stripImage(look: StripLook): string {
 		`<rect width="200" height="100" fill="#000000"/>` +
 		`<rect x="2" y="2" width="196" height="96" rx="14" fill="${c.deep}"/>` +
 		`<rect x="2" y="2" width="196" height="${band}" rx="14" fill="${c.band}"/><rect x="2" y="14" width="196" height="${band - 12}" fill="${c.band}"/>` +
-		line(19, 14, look.caption, ink(c.band), 180) +
+		line(19, 14, look.caption, INK, 180) +
 		(look.active ? `<rect x="4" y="4" width="192" height="92" rx="12" fill="none" stroke="${on}" stroke-width="3"/>` : "") +
 		valueSvg +
 		(look.sub ? line(90, 13, look.sub, look.active ? on : c.text, 184) : "") +

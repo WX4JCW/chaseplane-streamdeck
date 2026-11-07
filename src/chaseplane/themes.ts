@@ -13,7 +13,8 @@ const THEMES: Record<string, [number, number]> = {
 	OUTSIDE_AIRFRAME: [94, 100],
 	OUTSIDE_CABIN: [250, 76],
 	OUTSIDE_CHASE: [8, 98],
-	OUTSIDE_ORBIT: [195, 86],
+	// Ours, not ChasePlane's: its Orbit cyan (195) read as Pilot's (190); American's blue #194F90 (owner, 2026-11-07).
+	OUTSIDE_ORBIT: [213, 70],
 	OUTSIDE_MISC: [15, 21],
 	WORLD_DEFAULT: [259, 84],
 	WORLD_TOWER: [108, 40],
@@ -34,24 +35,47 @@ function hsl(h: number, s: number, l: number): string {
 	return `#${[f(0), f(8), f(4)].map((x) => Math.round(x * 255).toString(16).padStart(2, "0")).join("").toUpperCase()}`;
 }
 
+type PanelColors = { deep: string; band: string; text: string; on: string };
+
+/** The key body: plain charcoal, the color only in the band and the name (owner, 2026-11-07: "A without glow"). */
+const BODY = "#141416";
+/** The neutral key, for keys without a theme. */
+const NEUTRAL: PanelColors = { deep: BODY, band: "#5C5C64", text: "#E1E1E1", on: "#3DDC84" };
+
+/** Relative luminance (WCAG) of a "#RRGGBB" color. */
+function luminance(color: string): number {
+	const lin = (v: number) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+	const [r, g, b] = [1, 3, 5].map((i) => lin(parseInt(color.slice(i, i + 2), 16) / 255));
+	return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** White caption needs at least 3:1 contrast with its band. */
+const WHITE_MIN_CONTRAST = 3;
+
 /**
- * Panel key colors (the deck's key style, owner's pick 2026-10-31): `deep` fills the key, `band`
- * is the caption band, `text` the name, `on` the active ring. Without a theme, neutral grey with
- * green for "on".
+ * Band at 42% lightness for the white caption every key now uses (owner, 2026-11-07), darkened
+ * further where a bright hue (yellow, lime, amber) would still be too light for white.
  */
-export function panelColors(theme?: string): { deep: string; band: string; text: string; on: string } {
+function panel(h: number, s: number): PanelColors {
+	let l = 42;
+	while (l > 24 && 1.05 / (luminance(hsl(h, s, l)) + 0.05) < WHITE_MIN_CONTRAST) l -= 1;
+	return { deep: BODY, band: hsl(h, s, l), text: hsl(h, s, 78), on: hsl(h, s, 60) };
+}
+
+/**
+ * Panel key colors (the deck's key style): `deep` fills the key, `band` is the caption band (white
+ * caption), `text` the name, `on` the active ring. Without a theme, neutral grey with green for "on".
+ */
+export function panelColors(theme?: string): PanelColors {
 	const hs = theme ? THEMES[theme] : undefined;
-	// Neutral band light enough for black caption text (owner: dark grey with black was too little contrast).
-	if (!hs) return { deep: "#16161A", band: "#A8A8B0", text: "#E1E1E1", on: "#3DDC84" };
-	const [h, s] = hs;
-	return { deep: hsl(h, s * 0.8, 11), band: hsl(h, s, 52), text: hsl(h, s, 78), on: hsl(h, s, 60) };
+	return hs ? panel(...hs) : NEUTRAL;
 }
 
 /**
  * Panel colors from any color ("#9FC3E7" or "hsl(210, 65%, 64%)"), with the same recipe as the themes:
  * used for airline colors on traffic keys. White or grey (no hue) gives the neutral key.
  */
-export function panelColorsFor(color: string): { deep: string; band: string; text: string; on: string } {
+export function panelColorsFor(color: string): PanelColors {
 	let h = 0;
 	let s = 0;
 	const hslMatch = /hsl\(\s*([\d.]+)\s*,\s*([\d.]+)%/i.exec(color);
@@ -70,8 +94,7 @@ export function panelColorsFor(color: string): { deep: string; band: string; tex
 			if (h < 0) h += 360;
 		}
 	}
-	if (s < 8) return panelColors();
-	return { deep: hsl(h, s * 0.8, 11), band: hsl(h, s, 52), text: hsl(h, s, 78), on: hsl(h, s, 60) };
+	return s < 8 ? NEUTRAL : panel(h, s);
 }
 
 /** Glow (55%) and text (72%) colors for a ChasePlane theme. */

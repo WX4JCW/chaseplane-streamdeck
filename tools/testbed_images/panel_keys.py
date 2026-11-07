@@ -39,6 +39,18 @@ def hsl(h, s, l):
     r, g, b = colorsys.hls_to_rgb(h / 360, l / 100, s / 100)
     return (round(r * 255), round(g * 255), round(b * 255))
 
+def luminance(rgb):
+    lin = lambda v: v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+    return 0.2126 * lin(rgb[0] / 255) + 0.7152 * lin(rgb[1] / 255) + 0.0722 * lin(rgb[2] / 255)
+
+def for_white(rgb):
+    """Darkens a band until white text has 3:1 contrast, as the plugin does (bright yellows, limes, ambers)."""
+    h, l, s = colorsys.rgb_to_hls(*(v / 255 for v in rgb))
+    while l > 0.24 and 1.05 / (luminance(rgb) + 0.05) < 3:
+        l -= 0.01
+        rgb = tuple(round(v * 255) for v in colorsys.hls_to_rgb(h, l, s))
+    return rgb
+
 def ink(rgb):
     lin = lambda v: v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
     l = 0.2126 * lin(rgb[0] / 255) + 0.7152 * lin(rgb[1] / 255) + 0.0722 * lin(rgb[2] / 255)
@@ -53,8 +65,10 @@ def fit(d, text, base, width=128):
 
 def draw(caption, l1, l2, app):
     h, sat = APPS[app]
-    DEEP, BAND, TEXT = hsl(h, sat * 0.8, 11), EXACT_BAND.get(app, hsl(h, sat, 52)), hsl(h, sat, 78)
-    INK = ink(BAND)
+    # The plugin's style since 2026-11-07: plain charcoal body, band at 42%, white caption (owner: "A without glow").
+    DEEP, BAND, TEXT = (20, 20, 22), EXACT_BAND.get(app, hsl(h, sat, 42) if sat else (0x5C, 0x5C, 0x64)), hsl(h, sat, 78) if sat else (225, 225, 225)
+    BAND = for_white(BAND)
+    INK = (255, 255, 255)
     im = Image.new("RGB", (K, K), (0, 0, 0)); d = ImageDraw.Draw(im)
     d.rounded_rectangle([0, 0, K - 1, K - 1], 18 * S, fill=DEEP)
     d.rounded_rectangle([0, 0, K - 1, 30 * S], 18 * S, fill=BAND); d.rectangle([0, 16 * S, K - 1, 30 * S], fill=BAND)
