@@ -125,6 +125,16 @@ export class ChasePlaneClient extends EventEmitter {
 		return this.request("set_camera_mode", { mode });
 	}
 
+	/** Camera to the nearest spot of that kind at the active airport (verified 2026-11-07: replies success and kind, mode 2 follows). */
+	goToNearest(kind: "tower" | "runway" | "parking" | "spotting"): Promise<void> {
+		return this.request("cam_go_to_nearest", { kind });
+	}
+
+	/** Releases a look-at lock (verified 2026-11-07). */
+	releaseLookAt(): Promise<void> {
+		return this.request("cam_lookat_unset");
+	}
+
 	/** Next cinematic shot (ChasePlane Remote command; untested while cinematics were off, 2026-10-31). */
 	nextCinematicShot(): Promise<void> {
 		return this.request("cam_cinematic_next");

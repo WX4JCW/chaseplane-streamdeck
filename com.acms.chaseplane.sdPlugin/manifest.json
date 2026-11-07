@@ -1,6 +1,6 @@
 {
 	"Name": "Camera Deck for ChasePlane",
-	"Version": "0.1.0.28",
+	"Version": "0.1.0.29",
 	"Author": "ACMS Digital Systems",
 	"Actions": [
 		{
@@ -141,7 +141,7 @@
 				"layout": "layouts/dial.json",
 				"TriggerDescription": {
 					"Rotate": "Step through",
-					"Push": "Home / first / select",
+					"Push": "Home / first / select / free look-at",
 					"Touch": "Same as push"
 				}
 			},
