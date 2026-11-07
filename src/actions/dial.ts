@@ -14,34 +14,54 @@ import { plainName } from "./view-key";
  * The + XL's six dials as one action; each dial's job comes from its position (owner, 2026-10-31):
  * 1 Group (turn: groups, the deck keys follow; push: home), 2 View (turn: views of the open group,
  * or the active camera's; push: its first view), 3 Mode (turn: cockpit, exterior, world, then the
- * nearest tower, runway, parking and spotting spots at the airport; push: release a look-at lock),
+ * nearest tower and runway, every runway end, nearest parking and spotting; push: release a look-at lock),
  * 4 Cinematic (turn: next shot; push: on/off), 5 Smart Cam (push: on/off, or resume from hold),
  * 6 Traffic (turn: nearby aircraft; push: back to my aircraft). Its touch strip section shows the
  * same, drawn in the deck's key style.
  */
 type Job = "group" | "view" | "mode" | "cinematic" | "director" | "traffic";
 const JOBS: Job[] = ["group", "view", "mode", "cinematic", "director", "traffic"];
-/** The Mode dial's stops: ChasePlane's three camera modes, then its nearest-airport spots (owner, 2026-11-07). */
-const MODES = ["Cockpit", "Exterior", "World", "Tower", "Runway", "Parking", "Spotting"];
-const NEAREST = ["tower", "runway", "parking", "spotting"] as const;
-const sendMode = (m: number): Promise<void> => (m < 3 ? chasePlane.setCameraMode(m) : chasePlane.goToNearest(NEAREST[m - 3]));
+/** One stop on the Mode dial: what the strip shows and what it sends. */
+type Stop = { key: string; caption: string; value: string; send: () => Promise<void> };
 
 /**
- * The stop last sent: ChasePlane reports a nearest spot only as world mode (2), so it is remembered
- * with the camera it landed on, and forgotten when the camera moves to anything else.
+ * The Mode dial's stops (owner, 2026-11-07): ChasePlane's three camera modes, the nearest tower and
+ * runway, then every runway end at the airport in number order, then the nearest parking and spotting.
  */
-let modeStop = -1;
+function stops(): Stop[] {
+	const mode = (m: number, value: string): Stop => ({ key: `mode${m}`, caption: "Mode", value, send: () => chasePlane.setCameraMode(m) });
+	const nearest = (kind: "tower" | "runway" | "parking" | "spotting", value: string): Stop => ({
+		key: kind,
+		caption: "Nearest",
+		value,
+		send: () => chasePlane.goToNearest(kind),
+	});
+	const ends = [...chasePlane.runwayEnds]
+		.sort((a, b) => parseInt(a.name) - parseInt(b.name) || a.name.localeCompare(b.name))
+		.map((r): Stop => ({ key: `rwy:${r.name}`, caption: `Runway · ${chasePlane.airport}`, value: r.name, send: () => chasePlane.goToRunway(r.index, r.end) }));
+	return [mode(0, "Cockpit"), mode(1, "Exterior"), mode(2, "World"), nearest("tower", "Tower"), nearest("runway", "Runway"), ...ends, nearest("parking", "Parking"), nearest("spotting", "Spotting")];
+}
+
+/**
+ * The world stop last sent: ChasePlane reports tower, runway, parking and spotting only as world mode
+ * (2), so it is remembered with the camera it landed on, and forgotten when the camera moves elsewhere.
+ */
+let sentStop: string | null = null;
 let stopPreset: string | null = null;
 chasePlane.on("camera", () => {
+	if (!sentStop) return;
 	const preset = chasePlane.camera?.preset_guid ?? null;
-	if (modeStop < 2) return;
-	if (chasePlane.camera?.mode !== 2) modeStop = -1;
+	if (chasePlane.camera?.mode !== 2) sentStop = null;
 	else if (stopPreset === null) stopPreset = preset;
-	else if (preset !== stopPreset) modeStop = -1;
+	else if (preset !== stopPreset) sentStop = null;
 });
-const currentStop = (): number => {
+const currentStop = (list: Stop[]): number => {
 	const mode = chasePlane.camera?.mode ?? -1;
-	return mode === 2 && modeStop >= 2 ? modeStop : mode;
+	if (mode === 2 && sentStop) {
+		const at = list.findIndex((st) => st.key === sentStop);
+		if (at >= 0) return at;
+	}
+	return list.findIndex((st) => st.key === `mode${mode}`);
 };
 /** Turning fast sends one camera switch when the dial settles, not one per tick. */
 const SETTLE_MS = 180;
@@ -58,7 +78,7 @@ export class DeckDialAction extends SingletonAction {
 
 	constructor() {
 		super();
-		for (const event of ["views", "camera", "connection", "traffic"]) chasePlane.on(event, () => this.renderAll());
+		for (const event of ["views", "camera", "connection", "traffic", "airport"]) chasePlane.on(event, () => this.renderAll());
 		groupLibrary.on("groups", () => this.renderAll());
 		deckScreen.on("screen", () => this.renderAll());
 		keyStyle.on("style", () => this.renderAll());
@@ -92,11 +112,13 @@ export class DeckDialAction extends SingletonAction {
 					return;
 				}
 				case "mode": {
-					const from = this.pending?.job === "mode" ? this.pending.target : Math.max(currentStop(), 0);
-					this.settle("mode", wrap(from + step, MODES.length), (m) => {
-						modeStop = m;
+					const list = stops();
+					const from = this.pending?.job === "mode" ? this.pending.target : Math.max(currentStop(list), 0);
+					this.settle("mode", wrap(from + step, list.length), (i) => {
+						const stop = list[i];
+						sentStop = stop.key.startsWith("mode") ? null : stop.key;
 						stopPreset = null;
-						return sendMode(m);
+						return stop.send();
 					});
 					return;
 				}
@@ -194,8 +216,9 @@ export class DeckDialAction extends SingletonAction {
 				return { theme: view.profile_theme, caption: group ? plainName(group) : "View", value: view.name, sub: `${at + 1}/${views.length}`, active: true };
 			}
 			case "mode": {
-				const m = this.pending?.job === "mode" ? this.pending.target : currentStop();
-				return { theme: "ONBOARD_PIC", caption: m >= 3 ? "Nearest" : "Mode", value: MODES[m] ?? "—", sub: "push: free look-at", active: m >= 0 };
+				const list = stops();
+				const stop = list[this.pending?.job === "mode" ? this.pending.target : currentStop(list)];
+				return { theme: "ONBOARD_PIC", caption: stop?.caption ?? "Mode", value: stop?.value ?? "—", sub: "push: free look-at", active: !!stop };
 			}
 			case "cinematic": {
 				const on = chasePlane.camera?.cinematic_enabled === true;

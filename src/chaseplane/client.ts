@@ -41,6 +41,10 @@ export type TrafficAircraft = {
 	distance?: number;
 };
 
+/** One end of a runway at the active airport, from the `airport_changed` push. */
+export type RunwayEnd = { name: string; index: number; end: 0 | 1 };
+const DESIGNATORS = ["", "L", "R", "C", "W", "A", "B"];
+
 type Message = { message: string; request_id?: string; status?: number; error?: string; payload?: any };
 
 const RECONNECT_MS = 3000;
@@ -65,6 +69,9 @@ export class ChasePlaneClient extends EventEmitter {
 	traffic: TrafficAircraft[] = [];
 	/** Aircraft the camera is on, from `camera_runtime_state.ai_traffic_tracking_id`; 0 = none. */
 	trackingId = 0;
+	/** The airport ChasePlane works with (nearest, or the one chosen in its Remote), and its runway ends in runway order. */
+	airport = "";
+	runwayEnds: RunwayEnd[] = [];
 	private readonly trafficById = new Map<number, TrafficAircraft>();
 	private trafficOrder: number[] = [];
 
@@ -128,6 +135,11 @@ export class ChasePlaneClient extends EventEmitter {
 	/** Camera to the nearest spot of that kind at the active airport (verified 2026-11-07: replies success and kind, mode 2 follows). */
 	goToNearest(kind: "tower" | "runway" | "parking" | "spotting"): Promise<void> {
 		return this.request("cam_go_to_nearest", { kind });
+	}
+
+	/** Camera to one runway end at the active airport (verified 2026-11-07 at KDFW: moves to that end's view). */
+	goToRunway(index: number, end: 0 | 1): Promise<void> {
+		return this.request("cam_go_to_airport_index", { kind: "runway", index, end });
 	}
 
 	/** Releases a look-at lock (verified 2026-11-07). */
@@ -218,6 +230,17 @@ export class ChasePlaneClient extends EventEmitter {
 			case "ai_traffic":
 				this.onTraffic(msg.payload ?? {});
 				break;
+			case "airport_changed": {
+				const data = msg.payload?.data;
+				if (!data?.runways) break;
+				this.airport = String(data.ident ?? "");
+				this.runwayEnds = (data.runways as any[]).flatMap((r, index): RunwayEnd[] => [
+					{ name: `${r.primary_number}${DESIGNATORS[r.primary_designator] ?? ""}`, index, end: 0 },
+					{ name: `${r.secondary_number}${DESIGNATORS[r.secondary_designator] ?? ""}`, index, end: 1 },
+				]);
+				this.emit("airport");
+				break;
+			}
 			case "view_created":
 			case "view_modified":
 			case "view_deleted":
