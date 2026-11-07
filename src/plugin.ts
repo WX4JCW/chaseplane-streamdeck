@@ -8,6 +8,7 @@ import { StatusAction } from "./actions/status";
 import { MyAircraftAction, TrafficPageAction, TrafficSlotAction } from "./actions/traffic";
 import { chasePlane } from "./chaseplane/client";
 import { groupLibrary } from "./chaseplane/groups";
+import { sim } from "./sim/sim";
 
 streamDeck.logger.setLevel("info");
 
@@ -24,3 +25,4 @@ streamDeck.actions.registerAction(new StatusAction());
 streamDeck.connect();
 chasePlane.start();
 groupLibrary.start();
+sim.start();

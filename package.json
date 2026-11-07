@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@elgato/streamdeck": "^3.0.2",
+        "node-simconnect": "^4.2.1",
         "ws": "^8.22.0"
     }
 }
