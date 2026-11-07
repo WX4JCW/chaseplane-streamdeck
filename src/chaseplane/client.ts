@@ -74,6 +74,7 @@ export class ChasePlaneClient extends EventEmitter {
 	runwayEnds: RunwayEnd[] = [];
 	private readonly trafficById = new Map<number, TrafficAircraft>();
 	private trafficOrder: number[] = [];
+	private readonly trafficWatchers = new Set<string>();
 
 	constructor(private readonly url: string) {
 		super();
@@ -162,12 +163,17 @@ export class ChasePlaneClient extends EventEmitter {
 		return this.request("user_aircraft_track");
 	}
 
-	/** Asks for a full traffic snapshot and live updates. */
-	async watchTraffic(on: boolean): Promise<void> {
+	/**
+	 * Asks for a full traffic snapshot and live updates on behalf of `who` (slot keys, the Traffic dial,
+	 * the deck's traffic group). Updates stop only when nobody wants them any more: the slot keys
+	 * leaving the screen used to stop them for the dial and the deck too (review, 2026-11-07).
+	 */
+	async watchTraffic(on: boolean, who: string): Promise<void> {
 		if (on) {
+			this.trafficWatchers.add(who);
 			await this.request("request_ai_traffic");
 			await this.request("start_ai_traffic_refresh");
-		} else {
+		} else if (this.trafficWatchers.delete(who) && this.trafficWatchers.size === 0) {
 			await this.request("stop_ai_traffic_refresh");
 		}
 	}

@@ -10,11 +10,14 @@ From ACMS Digital Systems, makers of [Datalink Pro](https://acmsdigital.com): a 
 
 Setup guide for users: [docs/Camera Deck for ChasePlane Setup Guide.pdf](docs/Camera%20Deck%20for%20ChasePlane%20Setup%20Guide.pdf).
 
-Stream Deck keys for ChasePlane in MSFS 2024: camera views, flashlight, cinematics and live
-traffic. The plugin mirrors what ChasePlane reports, live, over `ws://localhost:8652`. It never
-changes ChasePlane, through its API or its files.
+Stream Deck keys and dials for ChasePlane in MSFS 2024: your camera groups and views, live
+traffic, nearest airport and runway cameras, and Smart Cam, which picks cameras by flight phase.
+The plugin mirrors what ChasePlane reports, live, over `ws://localhost:8652`. It never changes
+ChasePlane, through its API or its files, and it only reads from the sim.
 
-For the owner's deck only. UUID `com.acms.chaseplane`, version 0.1.0.0.
+Built for the owner's Stream Deck + XL (its six dials and the packed profile assume that layout),
+MSFS 2024 from Steam (ChasePlane's group files are read from `%APPDATA%\Microsoft Flight Simulator
+2024\WASM\...`) and Windows. UUID `com.acms.chaseplane`; the version is in the manifest.
 
 The camera folders on the SimDeck profile are built by the generator in `tools/generate/`
 (see its README). Verified ChasePlane facts and open work are in `PLAN.md`.
@@ -31,6 +34,7 @@ The camera folders on the SimDeck profile are built by the generator in `tools/g
 | My Aircraft | Camera back to your aircraft (`user_aircraft_track`) | Fixed image | none |
 | Status | Nothing | Green dot, CHASEPLANE and the loaded aircraft while connected; red OFFLINE while not (the plugin retries every 3 s) | none |
 | Deck Key | Depends on its job (below) | One key of the live deck, drawn by the plugin | none; its job comes from its position |
+| Deck Dial | Depends on its dial (below) | Its section of the touch strip | none; its job comes from its position |
 
 Deck Key: a page filled with Deck Keys works like an app, entirely live.
 - Home: one row each for onboard, outside and world; the area's name in column 1, then its groups in
@@ -41,9 +45,33 @@ Deck Key: a page filled with Deck Keys works like an app, entirely live.
 - Groups come from ChasePlane's group files (`work\group\onboard|outside|world\*.json`), which the
   API does not report; the plugin reads them, never writes them, and rereads them when they change.
   Views come from the API; each names its group (`profile_preset`).
+- Hold to peek: hold a view key for half a second or more and the camera goes back to the one
+  before when you let go. A quick press switches as usual.
 - `node tools/testbed.cjs` fills page 1 of CP Test Bed: Deck Keys, plus Flashlight, Cinematic,
   My Aircraft and Traffic at columns 6 to 9 of the bottom row. Quit Stream Deck first; it backs up
   the profile to `tools/backup_testbed/`.
+
+Deck Dial, by position on the + XL (turn / push; a tap on the touch strip counts as a push):
+
+| Dial | Turn | Push |
+|---|---|---|
+| 1 Group | Steps through the groups; the deck keys follow | Home |
+| 2 View | Steps through the open group's views (else the active camera's group) | Its first view |
+| 3 Mode | Cockpit, Exterior, World, then the nearest Tower and Runway, every runway end at the airport by name (RWY 36L), the nearest Parking and Spotting | Frees a look-at lock |
+| 4 Cinematic | Next shot | Cinematics on/off |
+| 5 Director | Stopped: Smart Cam or Auto Tour. Auto Tour running: its speed, 5 to 120 s | Start, stop, or resume from HOLD |
+| 6 Traffic | Steps through nearby AI aircraft, colored by airline | Back to your aircraft |
+
+Director:
+- Smart Cam reads the sim (SimConnect, read only) and works out the flight phase: GATE, TAXI OUT,
+  TAKEOFF, CLIMB, CRUISE, DESCENT, APPROACH, LANDING, TAXI IN, AT GATE (Datalink Pro's OOOI
+  thresholds, `src/sim/phase.ts`). Each phase tours ChasePlane groups of one theme every 20 s:
+  spot views at the gate, airframe cameras taxiing, runway for takeoff and landing, chase in climb
+  and descent, ChasePlane's cinematics in cruise, tower on approach, parking at the gate. Without
+  the sim it waits. Checked at the gate only; a full flight test is pending.
+- Auto Tour moves through the group open on the deck (else the active camera's group) every 15 s,
+  and follows when another group is opened.
+- Choosing a camera yourself puts either on HOLD; a push resumes.
 
 Camera settings:
 - `guid` picks the view. World views (Tower, Traffic and the rest) get new GUIDs, so `name` and
@@ -98,8 +126,15 @@ goes through build, pack and install.
 | File | Does |
 |---|---|
 | `src/plugin.ts` | Registers the actions and connects |
-| `src/chaseplane/client.ts` | The one ChasePlane connection: handshake, requests by id with timeout, reconnect, events for camera, flashlight, views and traffic |
-| `src/chaseplane/themes.ts` | ChasePlane Remote's theme colors and the view tags (L, R, FWD, MID, AFT) |
+| `src/chaseplane/client.ts` | The one ChasePlane connection: handshake, requests by id with timeout, reconnect, events for camera, flashlight, views, traffic and the airport's runways |
+| `src/chaseplane/groups.ts` | Reads ChasePlane's group files (read only) and watches them |
+| `src/chaseplane/themes.ts` | Key colors per ChasePlane theme and the view tags (L, R, FWD, MID, AFT) |
+| `src/sim/sim.ts`, `src/sim/phase.ts` | Read-only SimConnect link and the flight phase |
+| `src/actions/deck.ts` | Deck Key: the live home screen, group pages, traffic group, hold to peek |
+| `src/actions/dial.ts` | Deck Dial: the six dials and their touch strip |
+| `src/actions/director.ts` | Smart Cam and Auto Tour |
+| `src/actions/key-style.ts` | Draws every key and touch-strip section |
+| `src/actions/status.ts` | Status key |
 | `src/actions/camera.ts` | Camera action |
 | `src/actions/view-key.ts` | Drawn camera keys and two-line names |
 | `src/actions/toggles.ts` | Flashlight and Cinematic |
@@ -116,6 +151,10 @@ puts it back):
 | `node tools/probe.mjs toggles` | Flashlight and cinematic on, then off again |
 | `node tools/probe.mjs idle [seconds]` | Holds a silent connection, reports if it drops |
 | `node tools/probe_traffic.mjs` | Logs the `ai_traffic` pushes |
+| `node tools/probe/cp_command.mjs <command> ['<json>']` | Sends one ChasePlane command, prints the reply and pushes (changes the camera) |
+| `node tools/probe/simconnect_probe.mjs` | Reads the flight-phase values from the sim once |
+
+Licence note: `node-simconnect` (LGPL-3.0-or-later) is bundled into `bin/plugin.js`.
 
 ## When something goes wrong
 

@@ -1,4 +1,4 @@
-import streamDeck, { action, KeyAction, KeyDownEvent, SingletonAction } from "@elgato/streamdeck";
+import streamDeck, { action, KeyAction, KeyDownEvent, KeyUpEvent, SingletonAction } from "@elgato/streamdeck";
 import type { JsonObject } from "@elgato/utils";
 import { EventEmitter } from "node:events";
 
@@ -52,6 +52,13 @@ export const activeGroupGuid = (): string | undefined => chasePlane.views.find((
 
 /** Groups the home screen shows: onboard, outside, world, each in ChasePlane's order, only those with views. */
 export const visibleGroups = (): Group[] => AREAS.flatMap((area) => groupLibrary.inArea(area).filter((g) => viewsOf(g.guid).length > 0));
+
+/**
+ * Hold to peek (owner, 2026-11-07): a view key held at least PEEK_MS switches back to the camera
+ * that was showing before, when it is let go. A quick press switches as before.
+ */
+const PEEK_MS = 500;
+let peek: { key: string; from: string | null; at: number } | null = null;
 
 const BLANK = `data:image/svg+xml;base64,${Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144"><rect width="144" height="144" fill="#000000"/></svg>`).toString("base64")}`;
 
@@ -166,7 +173,7 @@ export class DeckAction extends SingletonAction {
 
 	/** Asks ChasePlane for the live AI list while a traffic group is open (the Traffic dial may already have). */
 	private watchTrafficIfOpen(): void {
-		if (trafficOpen() && chasePlane.ready) void chasePlane.watchTraffic(true).catch((e) => streamDeck.logger.warn(`traffic watch failed: ${e.message}`));
+		if (trafficOpen() && chasePlane.ready) void chasePlane.watchTraffic(true, "deck").catch((e) => streamDeck.logger.warn(`traffic watch failed: ${e.message}`));
 	}
 
 	override onWillAppear(): void {
@@ -176,6 +183,17 @@ export class DeckAction extends SingletonAction {
 	override onWillDisappear(): void {
 		this.drawn.clear();
 		this.renderAll();
+	}
+
+	override async onKeyUp(ev: KeyUpEvent): Promise<void> {
+		const held = peek?.key === ev.action.id ? peek : null;
+		peek = null;
+		if (!held?.from || Date.now() - held.at < PEEK_MS || held.from === chasePlane.activeGuid) return;
+		try {
+			await chasePlane.setView(held.from);
+		} catch (error) {
+			streamDeck.logger.warn(`peek return failed: ${(error as Error).message}`);
+		}
 	}
 
 	override async onKeyDown(ev: KeyDownEvent): Promise<void> {
@@ -191,6 +209,7 @@ export class DeckAction extends SingletonAction {
 				if (screen.kind === "group") screen.page += role.step;
 				break;
 			case "view":
+				peek = { key: ev.action.id, from: chasePlane.activeGuid, at: Date.now() };
 				try {
 					await chasePlane.setView(role.view.guid);
 				} catch (error) {

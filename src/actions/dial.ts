@@ -84,11 +84,13 @@ export class DeckDialAction extends SingletonAction {
 		deckScreen.on("screen", () => this.renderAll());
 		keyStyle.on("style", () => this.renderAll());
 		director.on("change", () => this.renderAll());
+		// ChasePlane forgets the traffic subscription when it restarts; ask again for the Traffic dial.
+		chasePlane.on("connection", () => chasePlane.ready && void chasePlane.watchTraffic(true, "dial").catch(() => undefined));
 		sim.on("phase", () => this.renderAll());
 	}
 
 	override async onWillAppear(): Promise<void> {
-		if (chasePlane.ready) await chasePlane.watchTraffic(true).catch(() => undefined);
+		if (chasePlane.ready) await chasePlane.watchTraffic(true, "dial").catch(() => undefined);
 		this.renderAll();
 	}
 

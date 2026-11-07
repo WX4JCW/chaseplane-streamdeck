@@ -38,6 +38,11 @@ const PLAN: Record<Phase, Target> = {
 const SMART_TOUR_S = 20;
 /** Auto Tour intervals the dial steps through, in seconds. */
 export const TOUR_INTERVALS = [5, 10, 15, 20, 30, 45, 60, 90, 120];
+/**
+ * After the director switches, whatever camera ChasePlane reports within this window is taken as the
+ * one it chose: world views (tower, runway, parking) come back under a new GUID (review, 2026-11-07).
+ */
+const OWN_SWITCH_MS = 3000;
 
 class Director extends EventEmitter {
 	/** The mode the dial shows; turning picks it while stopped. */
@@ -51,13 +56,24 @@ class Director extends EventEmitter {
 	private views: View[] = [];
 	private at = -1;
 	private sent: string | null = null;
+	private sentAt = 0;
 	private cinematicByUs = false;
 	private timer: NodeJS.Timeout | null = null;
 
 	constructor() {
 		super();
 		sim.on("phase", () => this.running && this.mode === "smart" && this.start());
-		sim.on("connection", () => this.emit("change"));
+		sim.on("connection", (connected: boolean) => {
+			// Without the sim there is no phase: Smart Cam stops switching and waits; the first phase
+			// after the sim returns starts it again (review, 2026-11-07).
+			if (!connected && this.running && this.mode === "smart") {
+				this.clearTimer();
+				this.endCinematic();
+				this.groups = [];
+				this.views = [];
+			}
+			this.emit("change");
+		});
 		chasePlane.on("camera", () => this.onCamera());
 	}
 
@@ -150,6 +166,7 @@ class Director extends EventEmitter {
 		this.at = (this.at + 1) % this.views.length;
 		const view = this.views[this.at];
 		this.sent = view.guid;
+		this.sentAt = Date.now();
 		void chasePlane.setView(view.guid).catch((e) => streamDeck.logger.error(`Director view: ${(e as Error).message}`));
 	}
 
@@ -162,6 +179,10 @@ class Director extends EventEmitter {
 		}
 		const active = chasePlane.activeGuid;
 		if (!active || active === this.sent) return;
+		if (Date.now() - this.sentAt < OWN_SWITCH_MS) {
+			this.sent = active;
+			return;
+		}
 		this.hold = true;
 		this.clearTimer();
 		this.emit("change");

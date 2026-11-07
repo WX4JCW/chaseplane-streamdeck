@@ -34,7 +34,7 @@ const redraw = (): void => {
 };
 chasePlane.on("traffic", redraw);
 chasePlane.on("connection", () => {
-	if (chasePlane.ready && paging.slots.size) void chasePlane.watchTraffic(true).catch(() => undefined);
+	if (chasePlane.ready && paging.slots.size) void chasePlane.watchTraffic(true, "slots").catch(() => undefined);
 	redraw();
 });
 
@@ -52,13 +52,13 @@ export class TrafficSlotAction extends SingletonAction<SlotSettings> {
 	override async onWillAppear(ev: WillAppearEvent<SlotSettings>): Promise<void> {
 		const first = paging.slots.size === 0;
 		paging.slots.set(ev.action.id, ev.payload.settings.slot ?? 1);
-		if (first && chasePlane.ready) await chasePlane.watchTraffic(true).catch((e) => streamDeck.logger.warn(`traffic watch failed: ${e.message}`));
+		if (first && chasePlane.ready) await chasePlane.watchTraffic(true, "slots").catch((e) => streamDeck.logger.warn(`traffic watch failed: ${e.message}`));
 		redraw();
 	}
 
 	override async onWillDisappear(ev: WillDisappearEvent<SlotSettings>): Promise<void> {
 		paging.slots.delete(ev.action.id);
-		if (paging.slots.size === 0 && chasePlane.ready) await chasePlane.watchTraffic(false).catch(() => undefined);
+		if (paging.slots.size === 0 && chasePlane.ready) await chasePlane.watchTraffic(false, "slots").catch(() => undefined);
 	}
 
 	override async onKeyDown(ev: KeyDownEvent<SlotSettings>): Promise<void> {

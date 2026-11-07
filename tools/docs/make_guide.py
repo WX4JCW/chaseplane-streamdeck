@@ -70,7 +70,7 @@ story.append(Spacer(1, 6))
 P("Setup guide: your ChasePlane cameras on the Stream Deck, organised the way you organise them in ChasePlane.", subtitle)
 story.append(Spacer(1, 18))
 picture("docs/guide_home.png", "The home screen: your ChasePlane groups on the keys, and the camera dials and touch strip below.")
-P("ACMS Digital Systems · Camera Deck for ChasePlane 0.1.0.33 · Microsoft Flight Simulator 2024", note)
+P("ACMS Digital Systems · Camera Deck for ChasePlane 0.1.0.34 · Microsoft Flight Simulator 2024", note)
 story.append(PageBreak())
 
 # ---- 1
