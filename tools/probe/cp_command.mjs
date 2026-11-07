@@ -19,9 +19,9 @@ ws.on("message", (raw) => {
 	} catch {
 		return;
 	}
-	if (msg.request_id === "probe") return console.log("REPLY", msg.status, msg.error ?? "", JSON.stringify(msg.payload ?? {}).slice(0, 300));
+	if (msg.request_id === "probe") return console.log("REPLY", msg.status, msg.error ?? "", JSON.stringify(msg.payload ?? {}).slice(0, process.env.FULL ? undefined : 300));
 	if (quiet.has(msg.message)) return;
-	console.log("PUSH ", msg.message, JSON.stringify(msg.payload ?? {}).slice(0, 300));
+	console.log("PUSH ", msg.message, JSON.stringify(msg.payload ?? {}).slice(0, process.env.FULL ? undefined : 300));
 });
 ws.on("error", (e) => {
 	console.log("ERROR", e.message);
