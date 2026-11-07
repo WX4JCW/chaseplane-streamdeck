@@ -6,7 +6,7 @@ import { groupLibrary } from "../chaseplane/groups";
 import { activeGroupGuid, deckScreen, openGroup, openGroupGuid, viewsOf, visibleGroups } from "./deck";
 import { sim } from "../sim/sim";
 import { keyStyle, stripImage, type StripLook } from "./key-style";
-import { smartCam } from "./smart-cam";
+import { director } from "./director";
 import { airlineColor, slotLines } from "./traffic-key";
 import { plainName } from "./view-key";
 
@@ -15,7 +15,8 @@ import { plainName } from "./view-key";
  * 1 Group (turn: groups, the deck keys follow; push: home), 2 View (turn: views of the open group,
  * or the active camera's; push: its first view), 3 Mode (turn: cockpit, exterior, world, then the
  * nearest tower and runway, every runway end, nearest parking and spotting; push: release a look-at lock),
- * 4 Cinematic (turn: next shot; push: on/off), 5 Smart Cam (push: on/off, or resume from hold),
+ * 4 Cinematic (turn: next shot; push: on/off), 5 Director (turn: Smart Cam or Auto Tour, or the tour's
+ * speed while touring; push: start, stop, or resume from hold),
  * 6 Traffic (turn: nearby aircraft; push: back to my aircraft). Its touch strip section shows the
  * same, drawn in the deck's key style.
  */
@@ -82,7 +83,7 @@ export class DeckDialAction extends SingletonAction {
 		groupLibrary.on("groups", () => this.renderAll());
 		deckScreen.on("screen", () => this.renderAll());
 		keyStyle.on("style", () => this.renderAll());
-		smartCam.on("change", () => this.renderAll());
+		director.on("change", () => this.renderAll());
 		sim.on("phase", () => this.renderAll());
 	}
 
@@ -124,6 +125,9 @@ export class DeckDialAction extends SingletonAction {
 				}
 				case "cinematic":
 					await chasePlane.nextCinematicShot();
+					return;
+				case "director":
+					director.turn(step);
 					return;
 				case "traffic": {
 					const list = chasePlane.traffic;
@@ -169,7 +173,7 @@ export class DeckDialAction extends SingletonAction {
 					await chasePlane.toggleCinematic();
 					return;
 				case "director":
-					smartCam.toggle();
+					director.push();
 					return;
 				case "traffic":
 					await chasePlane.trackUserAircraft();
@@ -225,14 +229,17 @@ export class DeckDialAction extends SingletonAction {
 				return { theme: "WORLD_DEFAULT", caption: "Cinematic", value: on ? "On" : "Off", sub: on ? "turn: next shot" : "push: start", active: on };
 			}
 			case "director":
-				if (!sim.connected) return { caption: "Smart Cam", value: smartCam.enabled ? "On" : "Off", sub: "no sim" };
-				if (!smartCam.enabled) return { caption: "Smart Cam", value: "Off", sub: sim.phase ? `${sim.phase} · push: start` : "push: start" };
+				if (!director.running) {
+					const name = director.mode === "smart" ? "Smart Cam" : "Auto Tour";
+					const why = director.mode === "smart" && !sim.connected ? "no sim · " : "";
+					return { caption: "Director", value: name, sub: `${why}push: start` };
+				}
 				return {
-					theme: smartCam.groups[0]?.theme ?? "WORLD_DEFAULT",
-					caption: `Smart Cam · ${sim.phase ?? "…"}`,
-					value: smartCam.hold ? "Hold" : smartCam.label(),
-					sub: smartCam.hold ? "push: resume" : "on",
-					active: !smartCam.hold,
+					theme: director.groups[0]?.theme ?? "WORLD_DEFAULT",
+					caption: director.mode === "smart" ? `Smart Cam · ${sim.phase ?? (sim.connected ? "…" : "no sim")}` : `Auto Tour · ${director.interval} s`,
+					value: director.hold ? "Hold" : director.label(),
+					sub: director.hold ? "push: resume" : director.mode === "tour" ? "turn: speed" : "push: stop",
+					active: !director.hold,
 				};
 			case "traffic": {
 				const list = chasePlane.traffic;
