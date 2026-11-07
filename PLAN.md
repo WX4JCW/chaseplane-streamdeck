@@ -18,7 +18,7 @@ How to build, install and use the plugin: `README.md`. How to run the page gener
 | Step 6: move the 66 Flight Panel buttons from the stalexcorp plugin | Not done; no migration script exists. The stalexcorp plugin was uninstalled 2026-10-22 (Stream Deck log), so any Flight Panel key still on it does nothing |
 | M5: one generated profile per aircraft | Not built |
 | M6: in-plugin dynamic page | Built 2026-10-27 as the Deck Key on CP Test Bed page 1: home of ChasePlane groups, group screens of views, all live; owner tested ("it works"); edits made in ChasePlane show on the deck live (owner, 2026-10-27: "it does update"). Views show as text; glyphs not yet |
-| Phase 3: deck features, flight phase, Smart Cam (P1 to P6) | Planned 2026-10-31; P1 (verify commands) is next |
+| Phase 3: deck features, flight phase, Smart Cam (P1 to P6) | 2026-11-07: P1 verified; Smart Cam (P3/P4) built, gate phase checked, flight test pending; nearest spots and runway ends on the Mode dial (P6) checked by owner |
 | Page title on the + XL touch strip | Later. Owner, 2026-10-17: "touch strip after we get the dynamic pages, dont get ahead". Mockup `tools/generate/out/title_options_page.png`, template `tools/generate/template_plusxl.png` |
 
 ## Environment
@@ -133,6 +133,8 @@ here. One probe run, each command sent once and undone where it changes somethin
 | `ai_traffic_auto_target_set` | `{enabled: bool}` | Auto target on/off; `camera_runtime_state.ai_traffic_auto_target_enabled` follows |
 
 Done when each row is verified or struck, with evidence recorded under "ChasePlane API".
+
+Results, 2026-11-07, ChasePlane 2026.39.1.16 at KDFW: `cam_go_to_nearest` works for all four kinds (reply `{success, kind}`, then `cam_mode_set` mode 2); `cam_lookat_unset` works; `cam_load_default` is struck (404 Unsupported command); `cam_go_to_airport_index {kind: runway, index, end}` moves the camera to that runway end's view, runways listed in the `airport_changed` push (`data.runways`, designator 1 L, 2 R, 3 C). `set_master_enabled` and `ai_traffic_auto_target_set` not tried. The iFly MAX 8 never reports BRAKE PARKING POSITION through SimConnect (stays 0 with the brake set).
 
 ## P2. Deck keys from the verified commands
 
